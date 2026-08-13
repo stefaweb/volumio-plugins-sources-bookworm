@@ -1,0 +1,29 @@
+{
+  "name": "radio_fip",
+  "version": "1.0.0",
+  "description": "FIP Radio plugin for Volumio",
+  "main": "index.js",
+  "author": "Stef",
+  "license": "GPL-3.0",
+  "repository": "https://github.com/volumio/volumio-plugins-sources-bookworm",
+
+  "volumio_info": {
+    "prettyName": "FIP Radio",
+    "icon": "fa-radio",
+    "plugin_type": "music_service",
+    "os": [
+      "bookworm"
+    ],
+    "architectures": [
+      "armhf",
+      "amd64"
+    ],
+    "details": "FIP Radio plugin for Volumio",
+    "changelog": ""
+  },
+
+  "engines": {
+    "volumio": ">=3",
+    "node": ">=20.5.1"
+  }
+}
