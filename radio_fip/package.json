@@ -16,14 +16,15 @@
     ],
     "architectures": [
       "armhf",
+      "arm64",
       "amd64"
     ],
-    "details": "FIP Radio plugin for Volumio",
-    "changelog": ""
+    "details": "FIP Radio plugin for Volumio 4",
+    "changelog": "Updated compatibility for Volumio 4"
   },
 
   "engines": {
-    "volumio": ">=3",
+    "volumio": ">=4",
     "node": ">=20.5.1"
   }
 }
