@@ -25,5 +25,12 @@
   "engines": {
     "volumio": ">=4",
     "node": ">=20.5.1"
+  },
+  "dependencies": {
+        "kew": "*",
+        "v-conf": "*",
+        "fs-extra": "*",
+        "nanotimer": "*",
+        "moment": "*"
   }
 }
