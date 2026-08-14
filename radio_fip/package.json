@@ -16,7 +16,6 @@
     ],
     "architectures": [
       "armhf",
-      "arm64",
       "amd64"
     ],
     "details": "FIP Radio plugin for Volumio 4",
