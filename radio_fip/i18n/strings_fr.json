@@ -10,5 +10,8 @@
   "INCORRECT_RESPONSE": "La réponse du serveur de diffusion radio {0} est incorrecte.",
 
   "SAVE": "Enregistrer",
-  "SAVE_CONFIG_MESSAGE": "Configuration enregistrée avec succès."
+  "SAVE_CONFIG_MESSAGE": "Configuration enregistrée avec succès.",
+
+  "API_DELAY": "Intervalle de rafraîchissement des métadonnées",
+  "API_DELAY_DESCRIPTION": "Délai entre les mises à jour des métadonnées Radio France en secondes."
 }

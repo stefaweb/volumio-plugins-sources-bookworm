@@ -3,7 +3,7 @@
  *
  * File        : index.js
  * Version     : 1.0.0
- * Date        : 13-08-2026
+ * Date        : 15-08-2026
  * Author      : Stef
  *
  * Description :
@@ -26,6 +26,9 @@
 var libQ = require('kew');
 var fs = require('fs-extra');
 var Metadata = require('./metadata');
+
+// Mettre à true pour activer les logs debug
+var DEBUG = true;
 
 module.exports = ControllerFIP;
 
@@ -61,14 +64,125 @@ ControllerFIP.prototype.onVolumioStart = function() {
         self.context,
         'config.json'
     );
+    self.getConf(self.configFile);
     self.logger.info('[radio_fip] onVolumioStart');
     return libQ.resolve();
 };
 
 /*
- * Returns plugin configuration files.
+ * Builds the plugin configuration interface.
+ *
+ * Loads localized UI strings and fills the current
+ * configuration values displayed in Volumio settings.
  */
-ControllerFIP.prototype.getConfigurationFiles = function() {
+ControllerFIP.prototype.getUIConfig = function () {
+    var defer = libQ.defer();
+    var self = this;
+    self.debugLog('[radio_fip] getUIConfig() CALLED');
+    var lang_code = self.commandRouter.sharedVars.get('language_code');
+    self.logger.info(
+        '[radio_fip] language=' + lang_code
+    );
+    self.getConf(self.configFile);
+    self.debugLog(
+        '[radio_fip] i18n fr exists=' +
+        fs.existsSync(__dirname + '/i18n/strings_' + lang_code + '.json')
+    );
+
+    self.debugLog(
+        '[radio_fip] i18n content=' +
+        JSON.stringify(
+            fs.readJsonSync(__dirname + '/i18n/strings_' + lang_code + '.json')
+        )
+    );
+    self.commandRouter.i18nJson(
+        __dirname + '/i18n/strings_' + lang_code + '.json',
+        __dirname + '/i18n/strings_en.json',
+        __dirname + '/UIConfig.json'
+    )
+    .then(function (uiconf) {
+        self.debugLog(
+            '[radio_fip] translated UI=' +
+            JSON.stringify(uiconf.page)
+        );
+        var apiDelay = self.config.get('apiDelay');
+        if (!apiDelay) {
+            apiDelay = 5;
+            self.config.set(
+                'apiDelay',
+                apiDelay
+            );
+        }
+        if (
+            uiconf.sections &&
+            uiconf.sections[0] &&
+            uiconf.sections[0].content &&
+            uiconf.sections[0].content[0]
+        ) {
+            uiconf.sections[0].content[0].value = apiDelay;
+        }
+        defer.resolve(uiconf);
+    })
+    .fail(function (err) {
+        self.logger.error(
+            '[radio_fip] getUIConfig error: ' +
+            err.message
+        );
+        defer.reject(err);
+    });
+    return defer.promise;
+};
+
+/*
+ * Updates the plugin configuration.
+ *
+ * Saves configuration values modified from
+ * the Volumio plugin settings interface.
+ */
+ControllerFIP.prototype.updateConfig = function (data) {
+    var self = this;
+    self.getConf(self.configFile);
+    if (data && data.apiDelay !== undefined) {
+        self.config.set(
+            'apiDelay',
+            data.apiDelay
+        );
+        self.logger.info(
+            '[radio_fip] apiDelay saved: ' +
+            data.apiDelay
+        );
+    }
+    return libQ.resolve();
+};
+
+/*
+ * Loads the plugin configuration file.
+ *
+ * Creates a v-conf instance and loads persistent
+ * configuration values from disk.
+ */
+ControllerFIP.prototype.getConf = function (configFile) {
+    this.config = new (require('v-conf'))();
+    this.config.loadFile(configFile);
+};
+
+/*
+ * Writes a debug message to the Volumio log.
+ *
+ * Debug messages are only displayed when
+ * the DEBUG flag is enabled.
+ */
+ControllerFIP.prototype.debugLog = function(message) {
+    if (DEBUG && this.logger) {
+        this.logger.info('[radio_fip][DEBUG] ' + message);
+    }
+};
+
+/*
+ * Returns the list of configuration files
+ * used by the plugin.
+ */
+ControllerFIP.prototype.getConfigurationFiles = function () {
     return ['config.json'];
 };
 
@@ -103,6 +217,8 @@ ControllerFIP.prototype.onStop = function() {
 
 /*
  * Restarts the FIP radio service.
+ *
+ * Currently no additional restart action is required.
  */
 ControllerFIP.prototype.onRestart = function() {
     return libQ.resolve();
@@ -211,7 +327,7 @@ ControllerFIP.prototype.getStationContent = function(uri) {
     var station = self.radioStations.find(function(item) {
         return item.id === stationId;
     });
-    self.logger.info(
+    self.debugLog(
         '[radio_fip] station lookup id=' +
         stationId +
         ' result=' +
@@ -230,7 +346,7 @@ ControllerFIP.prototype.getStationContent = function(uri) {
             }
         });
     }
-    self.logger.info(
+    self.debugLog(
         '[radio_fip] getStationContent station=' +
         station.title
     );
@@ -263,7 +379,7 @@ ControllerFIP.prototype.getStationContent = function(uri) {
  */
 ControllerFIP.prototype.explodeUri = function(uri) {
     var self = this;
-    self.logger.info(
+    self.debugLog(
         '[radio_fip] explodeUri uri=' + uri
     );
     var stationId =
@@ -279,7 +395,7 @@ ControllerFIP.prototype.explodeUri = function(uri) {
         );
         return libQ.resolve([]);
     }
-    self.logger.info(
+    self.debugLog(
         '[radio_fip] explodeUri OK station=' +
         station.title
     );
@@ -316,7 +432,7 @@ ControllerFIP.prototype.clearAddPlayTrack = function(track) {
             return item.stream === track.uri;
         });
     }
-    self.logger.info(
+   self.debugLog(
         '[radio_fip] clearAddPlayTrack station=' +
         JSON.stringify(station)
     );
@@ -391,7 +507,7 @@ ControllerFIP.prototype.clearAddPlayTrack = function(track) {
             );
         self.commandRouter.stateMachine.currentService =
     		self.serviceName;
-        self.logger.info(
+        self.debugLog(
             '[radio_fip] BEFORE INITIAL PUSH=' +
             JSON.stringify(self.state)
         );
@@ -399,7 +515,7 @@ ControllerFIP.prototype.clearAddPlayTrack = function(track) {
             self.state,
             self.serviceName
         );
-        self.logger.info(
+        self.debugLog(
             '[radio_fip] AFTER INITIAL PUSH=' +
             JSON.stringify(self.state)
         );
@@ -411,7 +527,7 @@ ControllerFIP.prototype.clearAddPlayTrack = function(track) {
                 self.updateBitrate();
             },3000);
         }
-        self.logger.info(
+        self.debugLog(
             '[radio_fip] Playback started station=' +
             (station ? station.title : 'unknown')
         );
@@ -470,15 +586,29 @@ ControllerFIP.prototype.getRadioI18nString = function(key) {
  */
 ControllerFIP.prototype.startMetadataTimer = function(station) {
     var self = this;
-    self.logger.info(
+    self.debugLog(
         '[radio_fip] startMetadataTimer ' +
         (station ? station.title : 'unknown')
     );
     self.stopMetadataTimer();
     if (!station) {
-        self.logger.error('[radio_fip] Cannot start metadata timer without station');
+        self.logger.error(
+            '[radio_fip] Cannot start metadata timer without station'
+        );
         return;
     }
+    var apiDelay = parseInt(
+        self.config.get('apiDelay'),
+        10
+    );
+    if (!apiDelay || apiDelay < 1) {
+        apiDelay = 5;
+    }
+    self.debugLog(
+        '[radio_fip] Metadata interval: ' +
+        apiDelay +
+        ' seconds'
+    );
     self.updateMetadata(station);
     self.metadataTimer = setInterval(function() {
         try {
@@ -490,8 +620,10 @@ ControllerFIP.prototype.startMetadataTimer = function(station) {
                 err.message
             );
         }
-    }, 5000);
-    self.logger.info('[radio_fip] Metadata timer started');
+    }, apiDelay * 1000);
+    self.logger.info(
+        '[radio_fip] Metadata timer started'
+    );
 };
 
 /*
@@ -505,9 +637,10 @@ ControllerFIP.prototype.stopMetadataTimer = function() {
 };
 
 /*
- * Pushes a song state update to Volumio.
+ * Pushes metadata information to the Volumio state machine.
  *
- * Updates title, artist, album and artwork information.
+ * Updates the current playback state with artist,
+ * title, album and artwork information.
  */
 ControllerFIP.prototype.pushSongState = function(data, station) {
     var self = this;
@@ -559,7 +692,7 @@ ControllerFIP.prototype.updateMetadata = function(station) {
             return;
         }
         self.lastMetadata = current;
-        self.logger.info(
+        self.debugLog(
             '[radio_fip] ' +
             data.artist +
             ' - ' +
@@ -583,7 +716,7 @@ ControllerFIP.prototype.updateMetadata = function(station) {
 			channels: '',
             radioType: 'FIP',
             title: data.title,
-            name:station.title,
+            name: station.title,
             artist: data.artist,
             album: data.album,
             albumart: data.albumart,
@@ -655,7 +788,7 @@ ControllerFIP.prototype.updateMetadata = function(station) {
                 e.message
             );
         }
-        self.logger.info(
+        self.debugLog(
             '[radio_fip] METADATA PUSH station=' +
             station.title +
             ' artist=' +
@@ -663,7 +796,7 @@ ControllerFIP.prototype.updateMetadata = function(station) {
             ' title=' +
             data.title
         );
-        self.logger.info(
+        self.debugLog(
             '[radio_fip] BEFORE METADATA PUSH=' +
             JSON.stringify(state)
         );
@@ -671,7 +804,7 @@ ControllerFIP.prototype.updateMetadata = function(station) {
             state,
             self.serviceName
         );
-        self.logger.info(
+        self.debugLog(
             '[radio_fip] Metadata PUSH done'
         );
     })
@@ -684,7 +817,10 @@ ControllerFIP.prototype.updateMetadata = function(station) {
 };
 
 /*
- * Stops FIP playback.
+ * Stops FIP radio playback.
+ *
+ * Stops MPD playback, releases metadata timers
+ * and updates the Volumio playback state.
  */
 ControllerFIP.prototype.stop = function() {
     var self = this;
@@ -763,7 +899,7 @@ ControllerFIP.prototype.updateBitrate = function() {
 			    queueItem.bitdepth = self.state.bitdepth;
 			    queueItem.channels = self.state.channels;
 			}
-            self.logger.info(
+            self.debugLog(
                 '[radio_fip] Audio detected ' +
                 self.state.samplerate +
                 ' ' +
@@ -808,9 +944,10 @@ ControllerFIP.prototype.updateBitrate = function() {
 };
 
 /*
- * Searches FIP content.
+ * Searches FIP radio content.
  *
- * Currently returns an empty result.
+ * FIP does not currently provide searchable content,
+ * therefore this method returns an empty result.
  */
 ControllerFIP.prototype.search = function() {
     return libQ.resolve([]);

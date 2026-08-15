@@ -10,5 +10,8 @@
   "INCORRECT_RESPONSE": "There is an incorrect response from {0} radio streaming server.",
 
   "SAVE": "Save",
-  "SAVE_CONFIG_MESSAGE": "Configuration saved successfully."
+  "SAVE_CONFIG_MESSAGE": "Configuration saved successfully.",
+
+  "API_DELAY": "Metadata refresh interval",
+  "API_DELAY_DESCRIPTION": "Delay between Radio France metadata updates in seconds."
 }

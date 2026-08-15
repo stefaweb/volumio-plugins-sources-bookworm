@@ -1,6 +1,6 @@
 {
-	"apiDelay": {
-      		"type": "string",
-      		"value": "30"
-  	} 
+  "apiDelay": {
+    "type": "string",
+    "value": "5"
+  }
 }
