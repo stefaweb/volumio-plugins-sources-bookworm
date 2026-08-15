@@ -1,0 +1,67 @@
+{
+  "PAGE": {
+    "LABEL": "Flight Mode"
+  },
+  "SECTION": {
+    "STATUS": "Status",
+    "RADIOS": "Radios",
+    "CONTROL": "Flight mode"
+  },
+  "STATUS": {
+    "LABEL": "Status",
+    "OFF": "Radios on",
+    "ON": "Flight mode on",
+    "WIFI_OFF": "WiFi off",
+    "BT_OFF": "Bluetooth off",
+    "HARD": "Hardware airplane switch is on"
+  },
+  "RADIOS": {
+    "LABEL": "Radios",
+    "LINE": "{name} ({type}): {soft}, {hard}",
+    "NONE": "No WiFi or Bluetooth radios found",
+    "WLAN": "WiFi",
+    "BLUETOOTH": "Bluetooth"
+  },
+  "SOFT": {
+    "BLOCKED": "software blocked",
+    "UNBLOCKED": "not software blocked"
+  },
+  "HARD": {
+    "BLOCKED": "hardware blocked",
+    "UNBLOCKED": "not hardware blocked"
+  },
+  "RECOVERY": {
+    "LABEL": "Network",
+    "ETH": "A wired network is connected. You can still reach this device over the cable.",
+    "NO_ETH": "No wired network. Turning WiFi or flight mode on leaves the device reachable only from this screen."
+  },
+  "HARDBLOCK": {
+    "NOTE": "A hardware airplane switch has turned a radio off. That cannot be cleared in software."
+  },
+  "BUTTON": {
+    "ENABLE": "Enable flight mode",
+    "DISABLE": "Disable flight mode",
+    "WIFI_DISABLE": "Disable WiFi",
+    "WIFI_ENABLE": "Enable WiFi",
+    "BT_DISABLE": "Disable Bluetooth",
+    "BT_ENABLE": "Enable Bluetooth"
+  },
+  "CONFIRM": {
+    "ENABLE_TITLE": "Turn on flight mode?",
+    "ENABLE_ETH": "WiFi and Bluetooth will turn off and stay off across reboot. You can still reach this device over the cable.",
+    "ENABLE_NO_ETH": "WiFi and Bluetooth will turn off and stay off across reboot. This device will be unreachable over the network. You can turn radios back on only from this screen, or by disabling the plugin.",
+    "WIFI_TITLE": "Turn off WiFi?",
+    "WIFI_ETH": "WiFi will turn off and stay off across reboot. You can still reach this device over the cable.",
+    "WIFI_NO_ETH": "WiFi will turn off and stay off across reboot. This device will be unreachable over the network. You can turn WiFi back on only from this screen, or by disabling the plugin."
+  },
+  "TOAST": {
+    "ENABLED": "WiFi and Bluetooth are off",
+    "DISABLED": "WiFi and Bluetooth are on",
+    "WIFI_OFF": "WiFi is off",
+    "WIFI_ON": "WiFi is on",
+    "BT_OFF": "Bluetooth is off",
+    "BT_ON": "Bluetooth is on",
+    "HARD_DENIED": "A hardware switch is blocking a radio. This cannot override it.",
+    "FAILED": "Could not apply radio state"
+  }
+}

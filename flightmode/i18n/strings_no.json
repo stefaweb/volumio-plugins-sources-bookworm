@@ -1,0 +1,67 @@
+{
+  "PAGE": {
+    "LABEL": "Flymodus"
+  },
+  "SECTION": {
+    "STATUS": "Status",
+    "RADIOS": "Radioer",
+    "CONTROL": "Flymodus"
+  },
+  "STATUS": {
+    "LABEL": "Status",
+    "OFF": "Radioer på",
+    "ON": "Flymodus på",
+    "WIFI_OFF": "Wi-Fi av",
+    "BT_OFF": "Bluetooth av",
+    "HARD": "Den fysiske flyknappen er på"
+  },
+  "RADIOS": {
+    "LABEL": "Radioer",
+    "LINE": "{name} ({type}): {soft}, {hard}",
+    "NONE": "Ingen Wi-Fi- eller Bluetooth-radioer funnet",
+    "WLAN": "Wi-Fi",
+    "BLUETOOTH": "Bluetooth"
+  },
+  "SOFT": {
+    "BLOCKED": "programvareblokkert",
+    "UNBLOCKED": "ikke programvareblokkert"
+  },
+  "HARD": {
+    "BLOCKED": "maskinvareblokkert",
+    "UNBLOCKED": "ikke maskinvareblokkert"
+  },
+  "RECOVERY": {
+    "LABEL": "Nettverk",
+    "ETH": "Et kablet nettverk er tilkoblet. Denne enheten kan fortsatt nås via kabelen.",
+    "NO_ETH": "Ingen kablet nettverk. Hvis Wi-Fi eller flymodus slås på, kan enheten bare nås fra denne skjermen."
+  },
+  "HARDBLOCK": {
+    "NOTE": "En fysisk flyknapp har slått av en radio. Det kan ikke oppheves i programvare."
+  },
+  "BUTTON": {
+    "ENABLE": "Slå på flymodus",
+    "DISABLE": "Slå av flymodus",
+    "WIFI_DISABLE": "Slå av Wi-Fi",
+    "WIFI_ENABLE": "Slå på Wi-Fi",
+    "BT_DISABLE": "Slå av Bluetooth",
+    "BT_ENABLE": "Slå på Bluetooth"
+  },
+  "CONFIRM": {
+    "ENABLE_TITLE": "Slå på flymodus?",
+    "ENABLE_ETH": "Wi-Fi og Bluetooth slås av og forblir av etter omstart. Denne enheten kan fortsatt nås via kabelen.",
+    "ENABLE_NO_ETH": "Wi-Fi og Bluetooth slås av og forblir av etter omstart. Denne enheten kan da ikke nås over nettverket. Du kan bare slå radioene på igjen fra denne skjermen, eller ved å deaktivere programtillegget.",
+    "WIFI_TITLE": "Slå av Wi-Fi?",
+    "WIFI_ETH": "Wi-Fi slås av og forblir av etter omstart. Denne enheten kan fortsatt nås via kabelen.",
+    "WIFI_NO_ETH": "Wi-Fi slås av og forblir av etter omstart. Denne enheten kan da ikke nås over nettverket. Du kan bare slå Wi-Fi på igjen fra denne skjermen, eller ved å deaktivere programtillegget."
+  },
+  "TOAST": {
+    "ENABLED": "Wi-Fi og Bluetooth er av",
+    "DISABLED": "Wi-Fi og Bluetooth er på",
+    "WIFI_OFF": "Wi-Fi er av",
+    "WIFI_ON": "Wi-Fi er på",
+    "BT_OFF": "Bluetooth er av",
+    "BT_ON": "Bluetooth er på",
+    "HARD_DENIED": "En maskinvareknapp blokkerer en radio. Det kan ikke overstyres.",
+    "FAILED": "Kunne ikke ta i bruk radiostatus"
+  }
+}

@@ -1,0 +1,10 @@
+{
+  "wifi": {
+    "type": "boolean",
+    "value": true
+  },
+  "bluetooth": {
+    "type": "boolean",
+    "value": true
+  }
+}

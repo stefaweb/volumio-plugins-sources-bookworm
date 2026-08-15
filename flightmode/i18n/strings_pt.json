@@ -1,0 +1,67 @@
+{
+  "PAGE": {
+    "LABEL": "Modo de voo"
+  },
+  "SECTION": {
+    "STATUS": "Estado",
+    "RADIOS": "Rádios",
+    "CONTROL": "Modo de voo"
+  },
+  "STATUS": {
+    "LABEL": "Estado",
+    "OFF": "Rádios ligados",
+    "ON": "Modo de voo ligado",
+    "WIFI_OFF": "Wi-Fi desligado",
+    "BT_OFF": "Bluetooth desligado",
+    "HARD": "O interruptor de avião por hardware está ligado"
+  },
+  "RADIOS": {
+    "LABEL": "Rádios",
+    "LINE": "{name} ({type}): {soft}, {hard}",
+    "NONE": "Não foram encontrados rádios Wi-Fi ou Bluetooth",
+    "WLAN": "Wi-Fi",
+    "BLUETOOTH": "Bluetooth"
+  },
+  "SOFT": {
+    "BLOCKED": "bloqueado por software",
+    "UNBLOCKED": "não bloqueado por software"
+  },
+  "HARD": {
+    "BLOCKED": "bloqueado por hardware",
+    "UNBLOCKED": "não bloqueado por hardware"
+  },
+  "RECOVERY": {
+    "LABEL": "Rede",
+    "ETH": "Há uma rede com fios ligada. Este dispositivo continua acessível pelo cabo.",
+    "NO_ETH": "Não há rede com fios. Desligar o Wi-Fi ou ativar o modo de voo deixa o dispositivo acessível apenas neste ecrã."
+  },
+  "HARDBLOCK": {
+    "NOTE": "Um interruptor de avião por hardware desligou um rádio. Isso não pode ser anulado por software."
+  },
+  "BUTTON": {
+    "ENABLE": "Ativar modo de voo",
+    "DISABLE": "Desativar modo de voo",
+    "WIFI_DISABLE": "Desativar Wi-Fi",
+    "WIFI_ENABLE": "Ativar Wi-Fi",
+    "BT_DISABLE": "Desativar Bluetooth",
+    "BT_ENABLE": "Ativar Bluetooth"
+  },
+  "CONFIRM": {
+    "ENABLE_TITLE": "Ativar o modo de voo?",
+    "ENABLE_ETH": "O Wi-Fi e o Bluetooth serão desligados e permanecerão desligados após o reinício. Este dispositivo continua acessível pelo cabo.",
+    "ENABLE_NO_ETH": "O Wi-Fi e o Bluetooth serão desligados e permanecerão desligados após o reinício. Este dispositivo deixará de ser acessível na rede. Só poderá voltar a ligar os rádios neste ecrã, ou desativando o plugin.",
+    "WIFI_TITLE": "Desligar o Wi-Fi?",
+    "WIFI_ETH": "O Wi-Fi será desligado e permanecerá desligado após o reinício. Este dispositivo continua acessível pelo cabo.",
+    "WIFI_NO_ETH": "O Wi-Fi será desligado e permanecerá desligado após o reinício. Este dispositivo deixará de ser acessível na rede. Só poderá voltar a ligá-lo neste ecrã, ou desativando o plugin."
+  },
+  "TOAST": {
+    "ENABLED": "Wi-Fi e Bluetooth estão desligados",
+    "DISABLED": "Wi-Fi e Bluetooth estão ligados",
+    "WIFI_OFF": "O Wi-Fi está desligado",
+    "WIFI_ON": "O Wi-Fi está ligado",
+    "BT_OFF": "O Bluetooth está desligado",
+    "BT_ON": "O Bluetooth está ligado",
+    "HARD_DENIED": "Um interruptor de hardware está a bloquear um rádio. Não é possível anulá-lo.",
+    "FAILED": "Não foi possível aplicar o estado dos rádios"
+  }
+}

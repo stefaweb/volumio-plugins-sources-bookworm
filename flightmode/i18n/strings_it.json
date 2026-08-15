@@ -1,0 +1,67 @@
+{
+  "PAGE": {
+    "LABEL": "Modalità aereo"
+  },
+  "SECTION": {
+    "STATUS": "Stato",
+    "RADIOS": "Radio",
+    "CONTROL": "Modalità aereo"
+  },
+  "STATUS": {
+    "LABEL": "Stato",
+    "OFF": "Radio accese",
+    "ON": "Modalità aereo attiva",
+    "WIFI_OFF": "Wi-Fi spento",
+    "BT_OFF": "Bluetooth spento",
+    "HARD": "L’interruttore aereo hardware è attivo"
+  },
+  "RADIOS": {
+    "LABEL": "Radio",
+    "LINE": "{name} ({type}): {soft}, {hard}",
+    "NONE": "Nessuna radio Wi-Fi o Bluetooth trovata",
+    "WLAN": "Wi-Fi",
+    "BLUETOOTH": "Bluetooth"
+  },
+  "SOFT": {
+    "BLOCKED": "bloccata via software",
+    "UNBLOCKED": "non bloccata via software"
+  },
+  "HARD": {
+    "BLOCKED": "bloccata via hardware",
+    "UNBLOCKED": "non bloccata via hardware"
+  },
+  "RECOVERY": {
+    "LABEL": "Rete",
+    "ETH": "È collegata una rete cablata. Questo dispositivo resta raggiungibile via cavo.",
+    "NO_ETH": "Nessuna rete cablata. Spegnendo il Wi-Fi o attivando la modalità aereo, il dispositivo è raggiungibile solo da questa schermata."
+  },
+  "HARDBLOCK": {
+    "NOTE": "Un interruttore aereo hardware ha spento una radio. Non è possibile sbloccarla via software."
+  },
+  "BUTTON": {
+    "ENABLE": "Attiva modalità aereo",
+    "DISABLE": "Disattiva modalità aereo",
+    "WIFI_DISABLE": "Disattiva Wi-Fi",
+    "WIFI_ENABLE": "Attiva Wi-Fi",
+    "BT_DISABLE": "Disattiva Bluetooth",
+    "BT_ENABLE": "Attiva Bluetooth"
+  },
+  "CONFIRM": {
+    "ENABLE_TITLE": "Attivare la modalità aereo?",
+    "ENABLE_ETH": "Wi-Fi e Bluetooth verranno spenti e resteranno spenti dopo il riavvio. Questo dispositivo resta raggiungibile via cavo.",
+    "ENABLE_NO_ETH": "Wi-Fi e Bluetooth verranno spenti e resteranno spenti dopo il riavvio. Questo dispositivo non sarà più raggiungibile in rete. Potrai riaccendere le radio solo da questa schermata, o disattivando il plugin.",
+    "WIFI_TITLE": "Spegnere il Wi-Fi?",
+    "WIFI_ETH": "Il Wi-Fi verrà spento e resterà spento dopo il riavvio. Questo dispositivo resta raggiungibile via cavo.",
+    "WIFI_NO_ETH": "Il Wi-Fi verrà spento e resterà spento dopo il riavvio. Questo dispositivo non sarà più raggiungibile in rete. Potrai riaccendere il Wi-Fi solo da questa schermata, o disattivando il plugin."
+  },
+  "TOAST": {
+    "ENABLED": "Wi-Fi e Bluetooth sono spenti",
+    "DISABLED": "Wi-Fi e Bluetooth sono accesi",
+    "WIFI_OFF": "Il Wi-Fi è spento",
+    "WIFI_ON": "Il Wi-Fi è acceso",
+    "BT_OFF": "Il Bluetooth è spento",
+    "BT_ON": "Il Bluetooth è acceso",
+    "HARD_DENIED": "Un interruttore hardware sta bloccando una radio. Non è possibile ignorarlo.",
+    "FAILED": "Impossibile applicare lo stato delle radio"
+  }
+}

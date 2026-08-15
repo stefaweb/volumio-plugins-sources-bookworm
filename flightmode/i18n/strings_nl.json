@@ -1,0 +1,67 @@
+{
+  "PAGE": {
+    "LABEL": "Vliegtuigmodus"
+  },
+  "SECTION": {
+    "STATUS": "Status",
+    "RADIOS": "Radio’s",
+    "CONTROL": "Vliegtuigmodus"
+  },
+  "STATUS": {
+    "LABEL": "Status",
+    "OFF": "Radio’s aan",
+    "ON": "Vliegtuigmodus aan",
+    "WIFI_OFF": "Wifi uit",
+    "BT_OFF": "Bluetooth uit",
+    "HARD": "De hardware-vliegtuigschakelaar staat aan"
+  },
+  "RADIOS": {
+    "LABEL": "Radio’s",
+    "LINE": "{name} ({type}): {soft}, {hard}",
+    "NONE": "Geen wifi- of bluetoothradio’s gevonden",
+    "WLAN": "Wifi",
+    "BLUETOOTH": "Bluetooth"
+  },
+  "SOFT": {
+    "BLOCKED": "softwarematig geblokkeerd",
+    "UNBLOCKED": "niet softwarematig geblokkeerd"
+  },
+  "HARD": {
+    "BLOCKED": "hardwarematig geblokkeerd",
+    "UNBLOCKED": "niet hardwarematig geblokkeerd"
+  },
+  "RECOVERY": {
+    "LABEL": "Netwerk",
+    "ETH": "Er is een bekabeld netwerk verbonden. Dit apparaat blijft via de kabel bereikbaar.",
+    "NO_ETH": "Geen bekabeld netwerk. Wifi of vliegtuigmodus inschakelen maakt het apparaat alleen via dit scherm bereikbaar."
+  },
+  "HARDBLOCK": {
+    "NOTE": "Een hardware-vliegtuigschakelaar heeft een radio uitgeschakeld. Dat kan niet via software ongedaan worden gemaakt."
+  },
+  "BUTTON": {
+    "ENABLE": "Vliegtuigmodus inschakelen",
+    "DISABLE": "Vliegtuigmodus uitschakelen",
+    "WIFI_DISABLE": "Wifi uitschakelen",
+    "WIFI_ENABLE": "Wifi inschakelen",
+    "BT_DISABLE": "Bluetooth uitschakelen",
+    "BT_ENABLE": "Bluetooth inschakelen"
+  },
+  "CONFIRM": {
+    "ENABLE_TITLE": "Vliegtuigmodus inschakelen?",
+    "ENABLE_ETH": "Wifi en bluetooth gaan uit en blijven uit na een herstart. Dit apparaat blijft via de kabel bereikbaar.",
+    "ENABLE_NO_ETH": "Wifi en bluetooth gaan uit en blijven uit na een herstart. Dit apparaat is dan niet meer via het netwerk bereikbaar. Je kunt de radio’s alleen weer inschakelen via dit scherm, of door de plugin uit te schakelen.",
+    "WIFI_TITLE": "Wifi uitschakelen?",
+    "WIFI_ETH": "Wifi gaat uit en blijft uit na een herstart. Dit apparaat blijft via de kabel bereikbaar.",
+    "WIFI_NO_ETH": "Wifi gaat uit en blijft uit na een herstart. Dit apparaat is dan niet meer via het netwerk bereikbaar. Je kunt wifi alleen weer inschakelen via dit scherm, of door de plugin uit te schakelen."
+  },
+  "TOAST": {
+    "ENABLED": "Wifi en bluetooth zijn uit",
+    "DISABLED": "Wifi en bluetooth zijn aan",
+    "WIFI_OFF": "Wifi is uit",
+    "WIFI_ON": "Wifi is aan",
+    "BT_OFF": "Bluetooth is uit",
+    "BT_ON": "Bluetooth is aan",
+    "HARD_DENIED": "Een hardwareschakelaar blokkeert een radio. Dat kan niet worden overschreven.",
+    "FAILED": "Radiostatus kon niet worden toegepast"
+  }
+}

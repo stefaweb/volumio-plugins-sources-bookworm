@@ -1,0 +1,67 @@
+{
+  "PAGE": {
+    "LABEL": "Flygplansläge"
+  },
+  "SECTION": {
+    "STATUS": "Status",
+    "RADIOS": "Radio",
+    "CONTROL": "Flygplansläge"
+  },
+  "STATUS": {
+    "LABEL": "Status",
+    "OFF": "Radio på",
+    "ON": "Flygplansläge på",
+    "WIFI_OFF": "Wi-Fi av",
+    "BT_OFF": "Bluetooth av",
+    "HARD": "Den fysiska flygplansknappen är på"
+  },
+  "RADIOS": {
+    "LABEL": "Radio",
+    "LINE": "{name} ({type}): {soft}, {hard}",
+    "NONE": "Inga Wi-Fi- eller Bluetooth-radioenheter hittades",
+    "WLAN": "Wi-Fi",
+    "BLUETOOTH": "Bluetooth"
+  },
+  "SOFT": {
+    "BLOCKED": "programvaruspärrad",
+    "UNBLOCKED": "inte programvaruspärrad"
+  },
+  "HARD": {
+    "BLOCKED": "hårdvaruspärrad",
+    "UNBLOCKED": "inte hårdvaruspärrad"
+  },
+  "RECOVERY": {
+    "LABEL": "Nätverk",
+    "ETH": "Ett trådbundet nätverk är anslutet. Den här enheten går fortfarande att nå via kabeln.",
+    "NO_ETH": "Inget trådbundet nätverk. Om Wi-Fi eller flygplansläge slås på går enheten bara att nå från den här skärmen."
+  },
+  "HARDBLOCK": {
+    "NOTE": "En fysisk flygplansknapp har stängt av en radio. Det kan inte hävas i programvara."
+  },
+  "BUTTON": {
+    "ENABLE": "Aktivera flygplansläge",
+    "DISABLE": "Inaktivera flygplansläge",
+    "WIFI_DISABLE": "Inaktivera Wi-Fi",
+    "WIFI_ENABLE": "Aktivera Wi-Fi",
+    "BT_DISABLE": "Inaktivera Bluetooth",
+    "BT_ENABLE": "Aktivera Bluetooth"
+  },
+  "CONFIRM": {
+    "ENABLE_TITLE": "Aktivera flygplansläge?",
+    "ENABLE_ETH": "Wi-Fi och Bluetooth stängs av och förblir avstängda efter omstart. Den här enheten går fortfarande att nå via kabeln.",
+    "ENABLE_NO_ETH": "Wi-Fi och Bluetooth stängs av och förblir avstängda efter omstart. Den här enheten går då inte att nå via nätverket. Du kan bara slå på radion igen från den här skärmen, eller genom att inaktivera insticksprogrammet.",
+    "WIFI_TITLE": "Stänga av Wi-Fi?",
+    "WIFI_ETH": "Wi-Fi stängs av och förblir avstängt efter omstart. Den här enheten går fortfarande att nå via kabeln.",
+    "WIFI_NO_ETH": "Wi-Fi stängs av och förblir avstängt efter omstart. Den här enheten går då inte att nå via nätverket. Du kan bara slå på Wi-Fi igen från den här skärmen, eller genom att inaktivera insticksprogrammet."
+  },
+  "TOAST": {
+    "ENABLED": "Wi-Fi och Bluetooth är av",
+    "DISABLED": "Wi-Fi och Bluetooth är på",
+    "WIFI_OFF": "Wi-Fi är av",
+    "WIFI_ON": "Wi-Fi är på",
+    "BT_OFF": "Bluetooth är av",
+    "BT_ON": "Bluetooth är på",
+    "HARD_DENIED": "En hårdvaruknapp blockerar en radio. Det kan inte åsidosättas.",
+    "FAILED": "Kunde inte tillämpa radiostatus"
+  }
+}

@@ -1,0 +1,67 @@
+{
+  "PAGE": {
+    "LABEL": "Flugmodus"
+  },
+  "SECTION": {
+    "STATUS": "Status",
+    "RADIOS": "Funkmodule",
+    "CONTROL": "Flugmodus"
+  },
+  "STATUS": {
+    "LABEL": "Status",
+    "OFF": "Funk an",
+    "ON": "Flugmodus an",
+    "WIFI_OFF": "WLAN aus",
+    "BT_OFF": "Bluetooth aus",
+    "HARD": "Der Hardware-Flugzeugschalter ist an"
+  },
+  "RADIOS": {
+    "LABEL": "Funkmodule",
+    "LINE": "{name} ({type}): {soft}, {hard}",
+    "NONE": "Keine WLAN- oder Bluetooth-Funkmodule gefunden",
+    "WLAN": "WLAN",
+    "BLUETOOTH": "Bluetooth"
+  },
+  "SOFT": {
+    "BLOCKED": "softwareseitig gesperrt",
+    "UNBLOCKED": "softwareseitig nicht gesperrt"
+  },
+  "HARD": {
+    "BLOCKED": "hardwareseitig gesperrt",
+    "UNBLOCKED": "hardwareseitig nicht gesperrt"
+  },
+  "RECOVERY": {
+    "LABEL": "Netzwerk",
+    "ETH": "Ein Kabelnetzwerk ist verbunden. Dieses Gerät bleibt über das Kabel erreichbar.",
+    "NO_ETH": "Kein Kabelnetzwerk. Wenn WLAN oder der Flugmodus eingeschaltet wird, ist das Gerät nur noch über diesen Bildschirm erreichbar."
+  },
+  "HARDBLOCK": {
+    "NOTE": "Ein Hardware-Flugzeugschalter hat ein Funkmodul ausgeschaltet. Das lässt sich per Software nicht aufheben."
+  },
+  "BUTTON": {
+    "ENABLE": "Flugmodus einschalten",
+    "DISABLE": "Flugmodus ausschalten",
+    "WIFI_DISABLE": "WLAN ausschalten",
+    "WIFI_ENABLE": "WLAN einschalten",
+    "BT_DISABLE": "Bluetooth ausschalten",
+    "BT_ENABLE": "Bluetooth einschalten"
+  },
+  "CONFIRM": {
+    "ENABLE_TITLE": "Flugmodus einschalten?",
+    "ENABLE_ETH": "WLAN und Bluetooth werden ausgeschaltet und bleiben über einen Neustart hinweg aus. Dieses Gerät bleibt über das Kabel erreichbar.",
+    "ENABLE_NO_ETH": "WLAN und Bluetooth werden ausgeschaltet und bleiben über einen Neustart hinweg aus. Dieses Gerät ist dann über das Netzwerk nicht mehr erreichbar. Funkmodule können nur über diesen Bildschirm oder durch Deaktivieren des Plugins wieder eingeschaltet werden.",
+    "WIFI_TITLE": "WLAN ausschalten?",
+    "WIFI_ETH": "WLAN wird ausgeschaltet und bleibt über einen Neustart hinweg aus. Dieses Gerät bleibt über das Kabel erreichbar.",
+    "WIFI_NO_ETH": "WLAN wird ausgeschaltet und bleibt über einen Neustart hinweg aus. Dieses Gerät ist dann über das Netzwerk nicht mehr erreichbar. WLAN kann nur über diesen Bildschirm oder durch Deaktivieren des Plugins wieder eingeschaltet werden."
+  },
+  "TOAST": {
+    "ENABLED": "WLAN und Bluetooth sind aus",
+    "DISABLED": "WLAN und Bluetooth sind an",
+    "WIFI_OFF": "WLAN ist aus",
+    "WIFI_ON": "WLAN ist an",
+    "BT_OFF": "Bluetooth ist aus",
+    "BT_ON": "Bluetooth ist an",
+    "HARD_DENIED": "Ein Hardware-Schalter sperrt ein Funkmodul. Das lässt sich nicht übersteuern.",
+    "FAILED": "Funkzustand konnte nicht angewendet werden"
+  }
+}

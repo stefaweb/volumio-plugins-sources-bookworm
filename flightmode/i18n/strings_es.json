@@ -1,0 +1,67 @@
+{
+  "PAGE": {
+    "LABEL": "Modo avión"
+  },
+  "SECTION": {
+    "STATUS": "Estado",
+    "RADIOS": "Radios",
+    "CONTROL": "Modo avión"
+  },
+  "STATUS": {
+    "LABEL": "Estado",
+    "OFF": "Radios encendidas",
+    "ON": "Modo avión activado",
+    "WIFI_OFF": "Wi-Fi apagado",
+    "BT_OFF": "Bluetooth apagado",
+    "HARD": "El interruptor de avión por hardware está activado"
+  },
+  "RADIOS": {
+    "LABEL": "Radios",
+    "LINE": "{name} ({type}): {soft}, {hard}",
+    "NONE": "No se han encontrado radios Wi-Fi o Bluetooth",
+    "WLAN": "Wi-Fi",
+    "BLUETOOTH": "Bluetooth"
+  },
+  "SOFT": {
+    "BLOCKED": "bloqueada por software",
+    "UNBLOCKED": "no bloqueada por software"
+  },
+  "HARD": {
+    "BLOCKED": "bloqueada por hardware",
+    "UNBLOCKED": "no bloqueada por hardware"
+  },
+  "RECOVERY": {
+    "LABEL": "Red",
+    "ETH": "Hay una red por cable conectada. Este dispositivo sigue siendo accesible por el cable.",
+    "NO_ETH": "No hay red por cable. Apagar el Wi-Fi o activar el modo avión deja el dispositivo accesible solo desde esta pantalla."
+  },
+  "HARDBLOCK": {
+    "NOTE": "Un interruptor de avión por hardware ha apagado una radio. No se puede desbloquear por software."
+  },
+  "BUTTON": {
+    "ENABLE": "Activar modo avión",
+    "DISABLE": "Desactivar modo avión",
+    "WIFI_DISABLE": "Desactivar Wi-Fi",
+    "WIFI_ENABLE": "Activar Wi-Fi",
+    "BT_DISABLE": "Desactivar Bluetooth",
+    "BT_ENABLE": "Activar Bluetooth"
+  },
+  "CONFIRM": {
+    "ENABLE_TITLE": "¿Activar el modo avión?",
+    "ENABLE_ETH": "Wi-Fi y Bluetooth se apagarán y seguirán apagados tras el reinicio. Este dispositivo seguirá siendo accesible por el cable.",
+    "ENABLE_NO_ETH": "Wi-Fi y Bluetooth se apagarán y seguirán apagados tras el reinicio. Este dispositivo dejará de ser accesible por la red. Solo podrá volver a encender las radios desde esta pantalla o desactivando el complemento.",
+    "WIFI_TITLE": "¿Apagar el Wi-Fi?",
+    "WIFI_ETH": "El Wi-Fi se apagará y seguirá apagado tras el reinicio. Este dispositivo seguirá siendo accesible por el cable.",
+    "WIFI_NO_ETH": "El Wi-Fi se apagará y seguirá apagado tras el reinicio. Este dispositivo dejará de ser accesible por la red. Solo podrá volver a encenderlo desde esta pantalla o desactivando el complemento."
+  },
+  "TOAST": {
+    "ENABLED": "Wi-Fi y Bluetooth están apagados",
+    "DISABLED": "Wi-Fi y Bluetooth están encendidos",
+    "WIFI_OFF": "El Wi-Fi está apagado",
+    "WIFI_ON": "El Wi-Fi está encendido",
+    "BT_OFF": "El Bluetooth está apagado",
+    "BT_ON": "El Bluetooth está encendido",
+    "HARD_DENIED": "Un interruptor de hardware está bloqueando una radio. No se puede anular.",
+    "FAILED": "No se pudo aplicar el estado de las radios"
+  }
+}

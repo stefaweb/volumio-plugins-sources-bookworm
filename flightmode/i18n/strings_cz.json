@@ -1,0 +1,67 @@
+{
+  "PAGE": {
+    "LABEL": "Režim letadlo"
+  },
+  "SECTION": {
+    "STATUS": "Stav",
+    "RADIOS": "Rádia",
+    "CONTROL": "Režim letadlo"
+  },
+  "STATUS": {
+    "LABEL": "Stav",
+    "OFF": "Rádia zapnutá",
+    "ON": "Režim letadlo zapnutý",
+    "WIFI_OFF": "Wi-Fi vypnuté",
+    "BT_OFF": "Bluetooth vypnutý",
+    "HARD": "Hardwarový přepínač režimu letadlo je zapnutý"
+  },
+  "RADIOS": {
+    "LABEL": "Rádia",
+    "LINE": "{name} ({type}): {soft}, {hard}",
+    "NONE": "Nebyla nalezena žádná rádia Wi-Fi ani Bluetooth",
+    "WLAN": "Wi-Fi",
+    "BLUETOOTH": "Bluetooth"
+  },
+  "SOFT": {
+    "BLOCKED": "blokováno softwarem",
+    "UNBLOCKED": "neblokováno softwarem"
+  },
+  "HARD": {
+    "BLOCKED": "blokováno hardwarem",
+    "UNBLOCKED": "neblokováno hardwarem"
+  },
+  "RECOVERY": {
+    "LABEL": "Síť",
+    "ETH": "Je připojena kabelová síť. Toto zařízení zůstane dostupné přes kabel.",
+    "NO_ETH": "Žádná kabelová síť. Vypnutí Wi-Fi nebo zapnutí režimu letadlo nechá zařízení dostupné jen z této obrazovky."
+  },
+  "HARDBLOCK": {
+    "NOTE": "Hardwarový přepínač režimu letadlo vypnul rádio. To nelze zrušit softwarem."
+  },
+  "BUTTON": {
+    "ENABLE": "Zapnout režim letadlo",
+    "DISABLE": "Vypnout režim letadlo",
+    "WIFI_DISABLE": "Vypnout Wi-Fi",
+    "WIFI_ENABLE": "Zapnout Wi-Fi",
+    "BT_DISABLE": "Vypnout Bluetooth",
+    "BT_ENABLE": "Zapnout Bluetooth"
+  },
+  "CONFIRM": {
+    "ENABLE_TITLE": "Zapnout režim letadlo?",
+    "ENABLE_ETH": "Wi-Fi a Bluetooth se vypnou a zůstanou vypnuté i po restartu. Toto zařízení zůstane dostupné přes kabel.",
+    "ENABLE_NO_ETH": "Wi-Fi a Bluetooth se vypnou a zůstanou vypnuté i po restartu. Toto zařízení pak nebude dostupné po síti. Rádia lze znovu zapnout jen z této obrazovky, nebo vypnutím pluginu.",
+    "WIFI_TITLE": "Vypnout Wi-Fi?",
+    "WIFI_ETH": "Wi-Fi se vypne a zůstane vypnuté i po restartu. Toto zařízení zůstane dostupné přes kabel.",
+    "WIFI_NO_ETH": "Wi-Fi se vypne a zůstane vypnuté i po restartu. Toto zařízení pak nebude dostupné po síti. Wi-Fi lze znovu zapnout jen z této obrazovky, nebo vypnutím pluginu."
+  },
+  "TOAST": {
+    "ENABLED": "Wi-Fi a Bluetooth jsou vypnuté",
+    "DISABLED": "Wi-Fi a Bluetooth jsou zapnuté",
+    "WIFI_OFF": "Wi-Fi je vypnuté",
+    "WIFI_ON": "Wi-Fi je zapnuté",
+    "BT_OFF": "Bluetooth je vypnutý",
+    "BT_ON": "Bluetooth je zapnutý",
+    "HARD_DENIED": "Hardwarový přepínač blokuje rádio. To nelze přepsat.",
+    "FAILED": "Stav rádií se nepodařilo použít"
+  }
+}

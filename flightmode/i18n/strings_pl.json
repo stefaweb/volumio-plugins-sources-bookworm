@@ -1,0 +1,67 @@
+{
+  "PAGE": {
+    "LABEL": "Tryb samolotowy"
+  },
+  "SECTION": {
+    "STATUS": "Stan",
+    "RADIOS": "Radia",
+    "CONTROL": "Tryb samolotowy"
+  },
+  "STATUS": {
+    "LABEL": "Stan",
+    "OFF": "Radia włączone",
+    "ON": "Tryb samolotowy włączony",
+    "WIFI_OFF": "Wi-Fi wyłączone",
+    "BT_OFF": "Bluetooth wyłączony",
+    "HARD": "Sprzętowy przełącznik trybu samolotowego jest włączony"
+  },
+  "RADIOS": {
+    "LABEL": "Radia",
+    "LINE": "{name} ({type}): {soft}, {hard}",
+    "NONE": "Nie znaleziono radia Wi-Fi ani Bluetooth",
+    "WLAN": "Wi-Fi",
+    "BLUETOOTH": "Bluetooth"
+  },
+  "SOFT": {
+    "BLOCKED": "zablokowane programowo",
+    "UNBLOCKED": "niezablokowane programowo"
+  },
+  "HARD": {
+    "BLOCKED": "zablokowane sprzętowo",
+    "UNBLOCKED": "niezablokowane sprzętowo"
+  },
+  "RECOVERY": {
+    "LABEL": "Sieć",
+    "ETH": "Podłączona jest sieć przewodowa. To urządzenie pozostaje dostępne przez kabel.",
+    "NO_ETH": "Brak sieci przewodowej. Wyłączenie Wi-Fi lub włączenie trybu samolotowego pozostawia urządzenie dostępne tylko z tego ekranu."
+  },
+  "HARDBLOCK": {
+    "NOTE": "Sprzętowy przełącznik trybu samolotowego wyłączył radio. Tego nie da się odblokować programowo."
+  },
+  "BUTTON": {
+    "ENABLE": "Włącz tryb samolotowy",
+    "DISABLE": "Wyłącz tryb samolotowy",
+    "WIFI_DISABLE": "Wyłącz Wi-Fi",
+    "WIFI_ENABLE": "Włącz Wi-Fi",
+    "BT_DISABLE": "Wyłącz Bluetooth",
+    "BT_ENABLE": "Włącz Bluetooth"
+  },
+  "CONFIRM": {
+    "ENABLE_TITLE": "Włączyć tryb samolotowy?",
+    "ENABLE_ETH": "Wi-Fi i Bluetooth zostaną wyłączone i pozostaną wyłączone po restarcie. To urządzenie pozostanie dostępne przez kabel.",
+    "ENABLE_NO_ETH": "Wi-Fi i Bluetooth zostaną wyłączone i pozostaną wyłączone po restarcie. To urządzenie nie będzie dostępne w sieci. Radia można włączyć ponownie tylko z tego ekranu albo wyłączając wtyczkę.",
+    "WIFI_TITLE": "Wyłączyć Wi-Fi?",
+    "WIFI_ETH": "Wi-Fi zostanie wyłączone i pozostanie wyłączone po restarcie. To urządzenie pozostanie dostępne przez kabel.",
+    "WIFI_NO_ETH": "Wi-Fi zostanie wyłączone i pozostanie wyłączone po restarcie. To urządzenie nie będzie dostępne w sieci. Wi-Fi można włączyć ponownie tylko z tego ekranu albo wyłączając wtyczkę."
+  },
+  "TOAST": {
+    "ENABLED": "Wi-Fi i Bluetooth są wyłączone",
+    "DISABLED": "Wi-Fi i Bluetooth są włączone",
+    "WIFI_OFF": "Wi-Fi jest wyłączone",
+    "WIFI_ON": "Wi-Fi jest włączone",
+    "BT_OFF": "Bluetooth jest wyłączony",
+    "BT_ON": "Bluetooth jest włączony",
+    "HARD_DENIED": "Przełącznik sprzętowy blokuje radio. Nie można tego nadpisać.",
+    "FAILED": "Nie udało się zastosować stanu radiów"
+  }
+}

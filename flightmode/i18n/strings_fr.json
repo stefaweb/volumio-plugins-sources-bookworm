@@ -1,0 +1,67 @@
+{
+  "PAGE": {
+    "LABEL": "Mode avion"
+  },
+  "SECTION": {
+    "STATUS": "État",
+    "RADIOS": "Radios",
+    "CONTROL": "Mode avion"
+  },
+  "STATUS": {
+    "LABEL": "État",
+    "OFF": "Radios allumées",
+    "ON": "Mode avion activé",
+    "WIFI_OFF": "Wi-Fi éteint",
+    "BT_OFF": "Bluetooth éteint",
+    "HARD": "L’interrupteur avion matériel est activé"
+  },
+  "RADIOS": {
+    "LABEL": "Radios",
+    "LINE": "{name} ({type}) : {soft}, {hard}",
+    "NONE": "Aucune radio Wi-Fi ou Bluetooth trouvée",
+    "WLAN": "Wi-Fi",
+    "BLUETOOTH": "Bluetooth"
+  },
+  "SOFT": {
+    "BLOCKED": "bloquée par logiciel",
+    "UNBLOCKED": "non bloquée par logiciel"
+  },
+  "HARD": {
+    "BLOCKED": "bloquée matériellement",
+    "UNBLOCKED": "non bloquée matériellement"
+  },
+  "RECOVERY": {
+    "LABEL": "Réseau",
+    "ETH": "Un réseau filaire est connecté. Cet appareil reste joignable par le câble.",
+    "NO_ETH": "Aucun réseau filaire. Couper le Wi-Fi ou activer le mode avion ne laisse l’appareil joignable que depuis cet écran."
+  },
+  "HARDBLOCK": {
+    "NOTE": "Un interrupteur avion matériel a éteint une radio. Cela ne peut pas être annulé par logiciel."
+  },
+  "BUTTON": {
+    "ENABLE": "Activer le mode avion",
+    "DISABLE": "Désactiver le mode avion",
+    "WIFI_DISABLE": "Désactiver le Wi-Fi",
+    "WIFI_ENABLE": "Activer le Wi-Fi",
+    "BT_DISABLE": "Désactiver le Bluetooth",
+    "BT_ENABLE": "Activer le Bluetooth"
+  },
+  "CONFIRM": {
+    "ENABLE_TITLE": "Activer le mode avion ?",
+    "ENABLE_ETH": "Le Wi-Fi et le Bluetooth seront éteints et le resteront après un redémarrage. Cet appareil reste joignable par le câble.",
+    "ENABLE_NO_ETH": "Le Wi-Fi et le Bluetooth seront éteints et le resteront après un redémarrage. Cet appareil ne sera plus joignable sur le réseau. Vous ne pourrez rallumer les radios que depuis cet écran, ou en désactivant le greffon.",
+    "WIFI_TITLE": "Éteindre le Wi-Fi ?",
+    "WIFI_ETH": "Le Wi-Fi sera éteint et le restera après un redémarrage. Cet appareil reste joignable par le câble.",
+    "WIFI_NO_ETH": "Le Wi-Fi sera éteint et le restera après un redémarrage. Cet appareil ne sera plus joignable sur le réseau. Vous ne pourrez le rallumer que depuis cet écran, ou en désactivant le greffon."
+  },
+  "TOAST": {
+    "ENABLED": "Wi-Fi et Bluetooth sont éteints",
+    "DISABLED": "Wi-Fi et Bluetooth sont allumés",
+    "WIFI_OFF": "Le Wi-Fi est éteint",
+    "WIFI_ON": "Le Wi-Fi est allumé",
+    "BT_OFF": "Le Bluetooth est éteint",
+    "BT_ON": "Le Bluetooth est allumé",
+    "HARD_DENIED": "Un interrupteur matériel bloque une radio. Impossible de le contourner.",
+    "FAILED": "Impossible d’appliquer l’état des radios"
+  }
+}

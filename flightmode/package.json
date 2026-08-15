@@ -1,0 +1,35 @@
+{
+  "name": "flightmode",
+  "version": "1.0.0",
+  "description": "Soft-block WiFi and Bluetooth and keep them blocked across reboot",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Just a Nerd",
+  "license": "ISC",
+  "repository": "https://github.com/volumio/volumio-plugins-sources-bookworm",
+  "volumio_info": {
+    "prettyName": "Flight Mode",
+    "icon": "fa-plane",
+    "plugin_type": "system_controller",
+    "architectures": [
+      "amd64",
+      "armhf"
+    ],
+    "os": [
+      "bookworm"
+    ],
+    "details": "Turns WiFi and Bluetooth off with rfkill and keeps them off across reboot. No OS files are overwritten; stopping or uninstalling the plugin removes the units and releases the radios.",
+    "changelog": "1.0.0: Independent WiFi and Bluetooth toggles; flight mode is the master for both"
+  },
+  "engines": {
+    "node": ">=20",
+    "volumio": ">=4"
+  },
+  "dependencies": {
+    "fs-extra": "^0.28.0",
+    "kew": "^0.7.0",
+    "v-conf": "^1.4.0"
+  }
+}

@@ -1,0 +1,67 @@
+{
+  "PAGE": {
+    "LABEL": "Lentokonetila"
+  },
+  "SECTION": {
+    "STATUS": "Tila",
+    "RADIOS": "Radiot",
+    "CONTROL": "Lentokonetila"
+  },
+  "STATUS": {
+    "LABEL": "Tila",
+    "OFF": "Radiot päällä",
+    "ON": "Lentokonetila päällä",
+    "WIFI_OFF": "Wi-Fi pois päältä",
+    "BT_OFF": "Bluetooth pois päältä",
+    "HARD": "Laitteiston lentokonekytkin on päällä"
+  },
+  "RADIOS": {
+    "LABEL": "Radiot",
+    "LINE": "{name} ({type}): {soft}, {hard}",
+    "NONE": "Wi-Fi- tai Bluetooth-radioita ei löytynyt",
+    "WLAN": "Wi-Fi",
+    "BLUETOOTH": "Bluetooth"
+  },
+  "SOFT": {
+    "BLOCKED": "estetty ohjelmistolla",
+    "UNBLOCKED": "ei estetty ohjelmistolla"
+  },
+  "HARD": {
+    "BLOCKED": "estetty laitteistolla",
+    "UNBLOCKED": "ei estetty laitteistolla"
+  },
+  "RECOVERY": {
+    "LABEL": "Verkko",
+    "ETH": "Langallinen verkko on kytketty. Tämä laite on edelleen tavoitettavissa kaapelin kautta.",
+    "NO_ETH": "Ei langallista verkkoa. Jos Wi-Fi tai lentokonetila kytketään päälle, laite on tavoitettavissa vain tältä näytöltä."
+  },
+  "HARDBLOCK": {
+    "NOTE": "Laitteiston lentokonekytkin on sammuttanut radion. Sitä ei voi poistaa ohjelmistolla."
+  },
+  "BUTTON": {
+    "ENABLE": "Ota lentokonetila käyttöön",
+    "DISABLE": "Poista lentokonetila käytöstä",
+    "WIFI_DISABLE": "Poista Wi-Fi käytöstä",
+    "WIFI_ENABLE": "Ota Wi-Fi käyttöön",
+    "BT_DISABLE": "Poista Bluetooth käytöstä",
+    "BT_ENABLE": "Ota Bluetooth käyttöön"
+  },
+  "CONFIRM": {
+    "ENABLE_TITLE": "Otetaanko lentokonetila käyttöön?",
+    "ENABLE_ETH": "Wi-Fi ja Bluetooth sammutetaan, ja ne pysyvät pois päältä uudelleenkäynnistyksen jälkeen. Tämä laite on edelleen tavoitettavissa kaapelin kautta.",
+    "ENABLE_NO_ETH": "Wi-Fi ja Bluetooth sammutetaan, ja ne pysyvät pois päältä uudelleenkäynnistyksen jälkeen. Tätä laitetta ei sen jälkeen tavoita verkosta. Radiot voi kytkeä takaisin päälle vain tältä näytöltä tai poistamalla laajennuksen käytöstä.",
+    "WIFI_TITLE": "Sammutetaanko Wi-Fi?",
+    "WIFI_ETH": "Wi-Fi sammutetaan, ja se pysyy pois päältä uudelleenkäynnistyksen jälkeen. Tämä laite on edelleen tavoitettavissa kaapelin kautta.",
+    "WIFI_NO_ETH": "Wi-Fi sammutetaan, ja se pysyy pois päältä uudelleenkäynnistyksen jälkeen. Tätä laitetta ei sen jälkeen tavoita verkosta. Wi-Fin voi kytkeä takaisin päälle vain tältä näytöltä tai poistamalla laajennuksen käytöstä."
+  },
+  "TOAST": {
+    "ENABLED": "Wi-Fi ja Bluetooth ovat pois päältä",
+    "DISABLED": "Wi-Fi ja Bluetooth ovat päällä",
+    "WIFI_OFF": "Wi-Fi on pois päältä",
+    "WIFI_ON": "Wi-Fi on päällä",
+    "BT_OFF": "Bluetooth on pois päältä",
+    "BT_ON": "Bluetooth on päällä",
+    "HARD_DENIED": "Laitteistokytkin estää radion. Sitä ei voi ohittaa.",
+    "FAILED": "Radiotilaa ei voitu ottaa käyttöön"
+  }
+}
