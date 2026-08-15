@@ -27,8 +27,8 @@ var libQ = require('kew');
 var fs = require('fs-extra');
 var Metadata = require('./metadata');
 
-// Mettre à true pour activer les logs debug
-var DEBUG = true;
+// Set to true to enable debug logging
+var DEBUG = false;
 
 module.exports = ControllerFIP;
 
@@ -103,7 +103,7 @@ ControllerFIP.prototype.getUIConfig = function () {
     .then(function (uiconf) {
         self.debugLog(
             '[radio_fip] translated UI=' +
-            JSON.stringify(uiconf.page)
+            JSON.stringify(uiconf)
         );
         var apiDelay = self.config.get('apiDelay');
         if (!apiDelay) {

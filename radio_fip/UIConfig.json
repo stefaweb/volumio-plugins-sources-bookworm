@@ -1,21 +1,21 @@
 {
   "page": {
-    "label": "I18N_PLUGIN_CONFIGURATION"
+    "label": "TRANSLATE.PLUGIN_CONFIGURATION"
   },
   "sections": [
     {
       "id": "delay",
       "element": "section",
-      "label": "I18N_API_DELAY",
+      "label": "TRANSLATE.API_DELAY",
       "icon": "fa-cogs",
-      "description": "I18N_API_DELAY_DESCRIPTION",
+      "description": "TRANSLATE.API_DELAY_DESCRIPTION",
       "onSave": {
         "type": "controller",
         "endpoint": "music_service/radio_fip",
         "method": "updateConfig"
       },
       "saveButton": {
-        "label": "I18N_SAVE",
+        "label": "TRANSLATE.SAVE",
         "data": [
           "apiDelay"
         ]
@@ -25,7 +25,7 @@
           "id": "apiDelay",
           "type": "text",
           "element": "input",
-          "label": "I18N_API_DELAY",
+          "label": "TRANSLATE.API_DELAY",
           "value": "5"
         }
       ]
