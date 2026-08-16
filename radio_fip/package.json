@@ -8,7 +8,7 @@
 	"repository": "https://github.com/volumio/volumio-plugins-sources-bookworm",
 	"volumio_info": {
 		"prettyName": "FIP Radio",
-		"icon": "fa-radio",
+		"icon": "fa-music",
 		"plugin_type": "music_service",
 		"os": [
 			"bookworm"
