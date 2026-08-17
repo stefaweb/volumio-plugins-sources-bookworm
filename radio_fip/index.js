@@ -2,7 +2,7 @@
  * Radio FIP Volumio Plugin
  *
  * File        : index.js
- * Version     : 1.0.2
+ * Version     : 1.0.3
  * Date        : 16-08-2026
  * Author      : Stef
  *
@@ -194,9 +194,15 @@ ControllerFIP.prototype.getConfigurationFiles = function () {
  */
 ControllerFIP.prototype.onStart = function() {
     var self = this;
+    
     self.mpdPlugin = self.commandRouter.pluginManager.getPlugin(
         'music_service',
         'mpd'
+    );
+    self.debugLog(
+        JSON.stringify(
+            self.commandRouter.volumioGetBrowseSources()
+        )
     );
     self.loadRadioI18nStrings();
     self.addRadioResource();
@@ -211,7 +217,23 @@ ControllerFIP.prototype.onStart = function() {
  * Stops metadata updates and releases timers.
  */
 ControllerFIP.prototype.onStop = function() {
-    this.stopMetadataTimer();
+    var self = this;
+    self.debugLog('[radio_fip] onStop called');
+    self.stopMetadataTimer();
+    self.removeToBrowseSources();
+    return libQ.resolve();
+};
+
+/*
+ * Called before plugin removal.
+ *
+ * Removes the FIP browse source registration.
+ */
+ControllerFIP.prototype.onRemove = function() {
+    var self = this;
+    self.debugLog('[radio_fip] onRemove called');
+    self.stopMetadataTimer();
+    self.removeToBrowseSources();
     return libQ.resolve();
 };
 
@@ -247,7 +269,21 @@ ControllerFIP.prototype.getStationLogo = function(station) {
  * Registers FIP Radio as a Volumio browse source.
  */
 ControllerFIP.prototype.addToBrowseSources = function() {
-    this.commandRouter.volumioAddToBrowseSources({
+    var self = this;
+    try {
+        self.commandRouter.volumioRemoveToBrowseSources(
+            'fip'
+        );
+        self.debugLog(
+            '[radio_fip] Old browse source removed'
+        );
+    }
+    catch(e) {
+        self.debugLog(
+            '[radio_fip] No previous browse source'
+        );
+    }
+    self.commandRouter.volumioAddToBrowseSources({
         name: 'FIP Radio',
         uri: 'fip',
         plugin_type: 'music_service',
@@ -255,7 +291,33 @@ ControllerFIP.prototype.addToBrowseSources = function() {
         albumart:
             '/albumart?sourceicon=music_service/radio_fip/images/fip-cover-black.png'
     });
+    self.debugLog(
+        '[radio_fip] Browse source added'
+    );
     return libQ.resolve();
+};
+
+/*
+ * Removes FIP Radio from Volumio browse sources.
+ *
+ * Compatible with Volumio 3.x and 4.x.
+ */
+ControllerFIP.prototype.removeToBrowseSources = function() {
+    var self = this;
+    try {
+        self.commandRouter.volumioRemoveToBrowseSources(
+            'FIP Radio'
+        );
+        self.debugLog(
+            '[radio_fip] Browse source removed'
+        );
+    }
+    catch(e) {
+        self.logger.error(
+            '[radio_fip] Browse source remove error: ' +
+            e.message
+        );
+    }
 };
 
 /*
