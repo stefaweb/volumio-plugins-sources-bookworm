@@ -30,6 +30,8 @@ The plugin provides:
 - FIP Sacré Français
 - FIP Monde
 
+The station “FIP Sacré Français” does not display album covers or track metadata (artist, title, album) because I have not been able to find the metadataId for this station.
+
 <br>
 <img width="2940" height="1852" alt="radio_fip_plugins_sc_1" src="https://github.com/user-attachments/assets/d6864727-5b00-4104-993b-fde385442ed3" />
 <br>
