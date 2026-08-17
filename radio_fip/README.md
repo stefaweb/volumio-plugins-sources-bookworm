@@ -27,7 +27,7 @@ The plugin provides:
 - FIP Pop
 - FIP Reggae
 - FIP Rock
-- FIP Sacre Francais
+- FIP Sacré Français
 - FIP Monde
 
 <br>
