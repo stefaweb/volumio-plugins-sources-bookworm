@@ -3,6 +3,7 @@
 var libQ = require('kew');
 var fs = require('fs-extra');
 var path = require('path');
+var crypto = require('crypto');
 var exec = require('child_process').exec;
 
 var LOG_PREFIX = '[FlightMode] ';
@@ -11,6 +12,8 @@ var UNIT_PATH = 'volumio-flightmode.path';
 var SYSTEMD_DIR = '/etc/systemd/system';
 var RFKILL_CLASS = '/sys/class/rfkill';
 var NET_CLASS = '/sys/class/net';
+var TEST_NOLAN_FILE = '/data/flightmode';
+var TOKEN_ALPHABET = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
 
 module.exports = ControllerFlightMode;
 
@@ -20,6 +23,7 @@ function ControllerFlightMode(context) {
   this.logger = this.context.logger;
   this.configManager = this.context.configManager;
   this._strings = null;
+  this._persistToken = null;
 }
 
 ControllerFlightMode.prototype.onVolumioStart = function () {
@@ -38,6 +42,10 @@ ControllerFlightMode.prototype.onStart = function () {
   var self = this;
   self._loadStrings();
   self._ensureStateFiles();
+  if (self._hasSentinel()) {
+    self._clearWifiPersist();
+    self._writeRadioStateSync(true, self._isRadioOn('bluetooth'));
+  }
 
   return self._writeServiceUnit()
     .then(function () {
@@ -61,6 +69,7 @@ ControllerFlightMode.prototype.onStart = function () {
 ControllerFlightMode.prototype.onStop = function () {
   var self = this;
 
+  self._clearWifiPersist();
   return self._writeRadioState(true, true)
     .then(function () {
       return self._writeMode('release');
@@ -73,7 +82,14 @@ ControllerFlightMode.prototype.onStop = function () {
       return libQ.resolve();
     })
     .then(function () {
-      return self._sudo('/bin/systemctl disable --now ' + UNIT_PATH + ' ' + UNIT_SERVICE);
+      return self._sudo('/bin/systemctl stop ' + UNIT_PATH);
+    })
+    .fail(function (err) {
+      self.logger.error(LOG_PREFIX + 'onStop stop path failed: ' + err);
+      return libQ.resolve();
+    })
+    .then(function () {
+      return self._sudo('/bin/systemctl disable ' + UNIT_PATH + ' ' + UNIT_SERVICE);
     })
     .fail(function (err) {
       self.logger.error(LOG_PREFIX + 'onStop disable failed: ' + err);
@@ -95,9 +111,10 @@ ControllerFlightMode.prototype.onRestart = function () {
 };
 
 // UI ---------------------------------------------------------------------------
-// sections[0] = section_status    status_text, radios_text, recovery_text
-// sections[1] = section_radios    disable_wifi, enable_wifi, disable_bluetooth, enable_bluetooth
-// sections[2] = section_control   enable_flightmode, disable_flightmode, hardblock_note
+// sections[0] status
+// sections[1] radios
+// sections[2] persist (challenge)
+// sections[3] flight mode
 
 ControllerFlightMode.prototype.getUIConfig = function () {
   var defer = libQ.defer();
@@ -115,6 +132,8 @@ ControllerFlightMode.prototype.getUIConfig = function () {
     var btOn = self._isRadioOn('bluetooth');
     var flightOn = !wifiOn && !btOn;
     var hasEth = self._hasWiredCarrier();
+    var persist = self._isWifiPersist();
+    var sentinel = self._hasSentinel();
     var radios = self._readRadios();
     var wifiHard = radios.some(function (r) { return r.type === 'wlan' && r.hard; });
     var btHard = radios.some(function (r) { return r.type === 'bluetooth' && r.hard; });
@@ -122,6 +141,7 @@ ControllerFlightMode.prototype.getUIConfig = function () {
 
     var statusSection = self._sectionById(uiconf, 'section_status');
     var radiosSection = self._sectionById(uiconf, 'section_radios');
+    var persistSection = self._sectionById(uiconf, 'section_persist');
     var controlSection = self._sectionById(uiconf, 'section_control');
 
     var statusItem = self._contentById(statusSection, 'status_text');
@@ -131,12 +151,18 @@ ControllerFlightMode.prototype.getUIConfig = function () {
     var enableWifi = self._contentById(radiosSection, 'enable_wifi');
     var disableBt = self._contentById(radiosSection, 'disable_bluetooth');
     var enableBt = self._contentById(radiosSection, 'enable_bluetooth');
+    var persistToken = self._contentById(persistSection, 'persist_token');
+    var persistChallenge = self._contentById(persistSection, 'persist_challenge');
+    var persistNote = self._contentById(persistSection, 'persist_note');
+    var persistRecover = self._contentById(persistSection, 'persist_recover');
     var enableFlight = self._contentById(controlSection, 'enable_flightmode');
     var disableFlight = self._contentById(controlSection, 'disable_flightmode');
     var hardNote = self._contentById(controlSection, 'hardblock_note');
 
     if (statusItem) {
-      if (anyHard) {
+      if (sentinel) {
+        statusItem.value = self._t('STATUS.SENTINEL');
+      } else if (anyHard) {
         statusItem.value = self._t('STATUS.HARD');
       } else if (flightOn) {
         statusItem.value = self._t('STATUS.ON');
@@ -154,15 +180,38 @@ ControllerFlightMode.prototype.getUIConfig = function () {
     }
 
     if (recoveryItem) {
-      recoveryItem.value = hasEth ? self._t('RECOVERY.ETH') : self._t('RECOVERY.NO_ETH');
+      if (sentinel) {
+        recoveryItem.value = self._t('RECOVERY.SENTINEL');
+      } else if (hasEth) {
+        recoveryItem.value = self._t('RECOVERY.ETH');
+      } else if (persist) {
+        recoveryItem.value = self._t('RECOVERY.NO_ETH_PERSIST');
+      } else {
+        recoveryItem.value = self._t('RECOVERY.NO_ETH');
+      }
+    }
+
+    var wifiConfirm;
+    if (hasEth) {
+      wifiConfirm = self._t('CONFIRM.WIFI_ETH');
+    } else if (persist) {
+      wifiConfirm = self._t('CONFIRM.WIFI_NO_ETH_PERSIST');
+    } else {
+      wifiConfirm = self._t('CONFIRM.WIFI_NO_ETH');
+    }
+    var flightConfirm;
+    if (hasEth) {
+      flightConfirm = self._t('CONFIRM.ENABLE_ETH');
+    } else if (persist) {
+      flightConfirm = self._t('CONFIRM.ENABLE_NO_ETH_PERSIST');
+    } else {
+      flightConfirm = self._t('CONFIRM.ENABLE_NO_ETH');
     }
 
     if (disableWifi) {
       disableWifi.hidden = !wifiOn || wifiHard;
       if (disableWifi.onClick && disableWifi.onClick.askForConfirm) {
-        disableWifi.onClick.askForConfirm.message = hasEth
-          ? self._t('CONFIRM.WIFI_ETH')
-          : self._t('CONFIRM.WIFI_NO_ETH');
+        disableWifi.onClick.askForConfirm.message = wifiConfirm;
       }
     }
     if (enableWifi) {
@@ -175,12 +224,73 @@ ControllerFlightMode.prototype.getUIConfig = function () {
       enableBt.hidden = btOn || btHard;
     }
 
+    if (persistSection) {
+      if (sentinel) {
+        persistSection.hidden = false;
+        if (persistToken) {
+          persistToken.hidden = true;
+        }
+        if (persistChallenge) {
+          persistChallenge.hidden = true;
+        }
+        delete persistSection.saveButton;
+        delete persistSection.onSave;
+        if (persistNote) {
+          persistNote.hidden = false;
+          persistNote.label = self._t('PERSIST.STATUS');
+          persistNote.value = self._t('PERSIST.NOTE_SENTINEL');
+        }
+        if (persistRecover) {
+          persistRecover.hidden = true;
+        }
+      } else if (persist) {
+        persistSection.hidden = false;
+        if (persistToken) {
+          persistToken.hidden = true;
+        }
+        if (persistChallenge) {
+          persistChallenge.hidden = true;
+        }
+        delete persistSection.saveButton;
+        delete persistSection.onSave;
+        if (persistNote) {
+          persistNote.hidden = false;
+          persistNote.label = self._t('PERSIST.STATUS');
+          persistNote.value = self._t('PERSIST.NOTE_ACTIVE');
+        }
+        if (persistRecover) {
+          persistRecover.hidden = false;
+          persistRecover.value = self._t('PERSIST.NOTE_RECOVER');
+        }
+      } else if (!hasEth) {
+        persistSection.hidden = false;
+        self._persistToken = self._newPersistToken();
+        if (persistToken) {
+          persistToken.hidden = false;
+          persistToken.value = self._persistToken;
+        }
+        if (persistChallenge) {
+          persistChallenge.hidden = false;
+          persistChallenge.value = '';
+        }
+        if (persistNote) {
+          persistNote.hidden = false;
+          persistNote.label = self._t('PERSIST.WARN_LABEL');
+          persistNote.value = self._t('PERSIST.NOTE_CHALLENGE');
+        }
+        if (persistRecover) {
+          persistRecover.hidden = false;
+          persistRecover.value = self._t('PERSIST.NOTE_RECOVER');
+        }
+      } else {
+        persistSection.hidden = true;
+      }
+    }
+
     if (enableFlight) {
       enableFlight.hidden = flightOn || anyHard;
       if (enableFlight.onClick && enableFlight.onClick.askForConfirm) {
-        enableFlight.onClick.askForConfirm.message = hasEth
-          ? self._t('CONFIRM.ENABLE_ETH')
-          : self._t('CONFIRM.ENABLE_NO_ETH');
+        enableFlight.onClick.askForConfirm.message = flightConfirm;
       }
     }
     if (disableFlight) {
@@ -202,27 +312,52 @@ ControllerFlightMode.prototype.getUIConfig = function () {
 };
 
 ControllerFlightMode.prototype.enableFlightMode = function () {
-  return this._setRadios(false, false, 'reconcile', 'TOAST.ENABLED', true);
+  return this._setRadios(false, false, 'session', 'TOAST.ENABLED', true);
 };
 
 ControllerFlightMode.prototype.disableFlightMode = function () {
+  this._clearWifiPersist();
   return this._setRadios(true, true, 'release', 'TOAST.DISABLED', false);
 };
 
 ControllerFlightMode.prototype.disableWifi = function () {
-  return this._setRadios(false, this._isRadioOn('bluetooth'), 'reconcile', 'TOAST.WIFI_OFF', true);
+  return this._setRadios(false, this._isRadioOn('bluetooth'), 'session', 'TOAST.WIFI_OFF', true);
 };
 
 ControllerFlightMode.prototype.enableWifi = function () {
+  this._clearWifiPersist();
   return this._setRadios(true, this._isRadioOn('bluetooth'), 'release-wifi', 'TOAST.WIFI_ON', false);
 };
 
 ControllerFlightMode.prototype.disableBluetooth = function () {
-  return this._setRadios(this._isRadioOn('wifi'), false, 'reconcile', 'TOAST.BT_OFF', true);
+  return this._setRadios(this._isRadioOn('wifi'), false, 'session', 'TOAST.BT_OFF', true);
 };
 
 ControllerFlightMode.prototype.enableBluetooth = function () {
   return this._setRadios(this._isRadioOn('wifi'), true, 'release-bluetooth', 'TOAST.BT_ON', false);
+};
+
+ControllerFlightMode.prototype.unlockWifiPersist = function (data) {
+  var self = this;
+  var typed = '';
+  if (data && data.persist_challenge !== undefined) {
+    typed = String(data.persist_challenge);
+  }
+  typed = typed.replace(/\s+/g, '').toUpperCase();
+  var expected = (self._persistToken || '').toUpperCase();
+  if (!expected || typed !== expected) {
+    self._persistToken = self._newPersistToken();
+    self.commandRouter.pushToastMessage('error', self._t('PAGE.LABEL'), self._t('TOAST.PERSIST_BAD'));
+    return self._refreshUI();
+  }
+  if (self._hasSentinel()) {
+    self.commandRouter.pushToastMessage('info', self._t('PAGE.LABEL'), self._t('TOAST.PERSIST_SENTINEL'));
+    return self._refreshUI();
+  }
+  self._setWifiPersist(true);
+  self._persistToken = null;
+  self.commandRouter.pushToastMessage('success', self._t('PAGE.LABEL'), self._t('TOAST.PERSIST_ON'));
+  return self._refreshUI();
 };
 
 // Internals -------------------------------------------------------------------
@@ -235,10 +370,10 @@ ControllerFlightMode.prototype._setRadios = function (wifiOn, bluetoothOn, mode,
       if (!r.hard) {
         return false;
       }
-      if (mode === 'reconcile' && !wifiOn && r.type === 'wlan') {
+      if (!wifiOn && r.type === 'wlan') {
         return true;
       }
-      if (mode === 'reconcile' && !bluetoothOn && r.type === 'bluetooth') {
+      if (!bluetoothOn && r.type === 'bluetooth') {
         return true;
       }
       return false;
@@ -287,6 +422,10 @@ ControllerFlightMode.prototype._modeFile = function () {
   return path.join(__dirname, 'flightmode.mode');
 };
 
+ControllerFlightMode.prototype._persistFile = function () {
+  return path.join(__dirname, 'wifi.persist');
+};
+
 ControllerFlightMode.prototype._isRadioOn = function (which) {
   var file = which === 'bluetooth' ? this._bluetoothStateFile() : this._wifiStateFile();
   try {
@@ -301,6 +440,84 @@ ControllerFlightMode.prototype._isRadioOn = function (which) {
     return !!this.config.get(key);
   }
   return !this.config.get('flightmode');
+};
+
+ControllerFlightMode.prototype._isWifiPersist = function () {
+  try {
+    if (fs.existsSync(this._persistFile())) {
+      return fs.readFileSync(this._persistFile(), 'utf8').trim() === 'on';
+    }
+  } catch (e) {
+  }
+  return !!this.config.get('wifi_persist');
+};
+
+ControllerFlightMode.prototype._setWifiPersist = function (on) {
+  this.config.set('wifi_persist', on);
+  fs.writeFileSync(this._persistFile(), on ? 'on\n' : 'off\n', 'utf8');
+};
+
+ControllerFlightMode.prototype._clearWifiPersist = function () {
+  this._setWifiPersist(false);
+};
+
+ControllerFlightMode.prototype._isEmptyFile = function (filePath) {
+  try {
+    if (!fs.existsSync(filePath)) {
+      return false;
+    }
+    var st = fs.statSync(filePath);
+    return st.isFile() && st.size === 0;
+  } catch (e) {
+    return false;
+  }
+};
+
+ControllerFlightMode.prototype._hasTestNoLan = function () {
+  return this._isEmptyFile(TEST_NOLAN_FILE);
+};
+
+ControllerFlightMode.prototype._hasSentinel = function () {
+  return !!this._findSentinel();
+};
+
+ControllerFlightMode.prototype._findSentinel = function () {
+  var candidates = ['/boot/wifi', '/boot/firmware/wifi'];
+  var i;
+  for (i = 0; i < candidates.length; i++) {
+    if (this._isEmptyFile(candidates[i])) {
+      return candidates[i];
+    }
+  }
+  var roots = ['/media', '/mnt'];
+  var r;
+  for (r = 0; r < roots.length; r++) {
+    if (!fs.existsSync(roots[r])) {
+      continue;
+    }
+    var mounts;
+    try {
+      mounts = fs.readdirSync(roots[r]);
+    } catch (e) {
+      continue;
+    }
+    for (i = 0; i < mounts.length; i++) {
+      var candidate = path.join(roots[r], mounts[i], 'wifi');
+      if (this._isEmptyFile(candidate)) {
+        return candidate;
+      }
+    }
+  }
+  return null;
+};
+
+ControllerFlightMode.prototype._newPersistToken = function () {
+  var out = '';
+  var bytes = crypto.randomBytes(6);
+  for (var i = 0; i < 6; i++) {
+    out += TOKEN_ALPHABET[bytes[i] % TOKEN_ALPHABET.length];
+  }
+  return out;
 };
 
 ControllerFlightMode.prototype._ensureStateFiles = function () {
@@ -319,6 +536,9 @@ ControllerFlightMode.prototype._ensureStateFiles = function () {
   }
   if (!fs.existsSync(this._modeFile())) {
     fs.writeFileSync(this._modeFile(), 'reconcile\n', 'utf8');
+  }
+  if (!fs.existsSync(this._persistFile())) {
+    this._setWifiPersist(!!this.config.get('wifi_persist'));
   }
 };
 
@@ -463,6 +683,9 @@ ControllerFlightMode.prototype._formatRadios = function (radios) {
 };
 
 ControllerFlightMode.prototype._hasWiredCarrier = function () {
+  if (this._hasTestNoLan()) {
+    return false;
+  }
   if (!fs.existsSync(NET_CLASS)) {
     return false;
   }

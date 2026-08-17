@@ -1,19 +1,26 @@
 #!/bin/bash
 # Apply or release per-radio rfkill policy.
 # Enumerates by type (bluetooth, wlan), never by index.
-# wifi.state / bluetooth.state: on = radio allowed, off = plugin holds a soft block.
-# Default (reconcile): soft-block each type whose state is off. Never unblock.
-# Mode release / release-wifi / release-bluetooth: soft-unblock those types, then reconcile.
+#
+# wifi.state / bluetooth.state: on = radio allowed, off = plugin holds a block.
+# wifi.persist: on = keep WiFi off across reboot even without LAN.
+# /run/flightmode-wifi-session: this-boot session hold (tmpfs, dies on reboot).
+# /data/flightmode: empty file = test mode, pretend no LAN.
+# Empty file named wifi in /boot or on a USB mount = sentinel, force WiFi on.
 
 set -eu
 
 PLUGIN_DIR="$(cd "$(dirname "$0")/.." && pwd)"
 WIFI_STATE_FILE="${PLUGIN_DIR}/wifi.state"
 BT_STATE_FILE="${PLUGIN_DIR}/bluetooth.state"
+PERSIST_FILE="${PLUGIN_DIR}/wifi.persist"
 MODE_FILE="${PLUGIN_DIR}/flightmode.mode"
 PATH_IN="${PLUGIN_DIR}/units/volumio-flightmode.path.in"
 PATH_GEN="${PLUGIN_DIR}/units/volumio-flightmode.path"
 RFKILL_CLASS="/sys/class/rfkill"
+NET_CLASS="/sys/class/net"
+SESSION_FILE="/run/flightmode-wifi-session"
+TEST_FILE="/data/flightmode"
 
 GENERATE_ONLY=0
 if [ "${1:-}" = "--generate-path" ]; then
@@ -43,6 +50,62 @@ list_watched() {
 
 device_type() {
   cat "${1}/type" 2>/dev/null || true
+}
+
+is_empty_file() {
+  local f="$1"
+  [ -f "${f}" ] && [ ! -s "${f}" ]
+}
+
+has_test_nolan() {
+  is_empty_file "${TEST_FILE}"
+}
+
+has_wired_carrier() {
+  local name carrier
+  if has_test_nolan; then
+    return 1
+  fi
+  if [ ! -d "${NET_CLASS}" ]; then
+    return 1
+  fi
+  for name in "${NET_CLASS}"/*; do
+    name="${name##*/}"
+    case "${name}" in
+      lo|wlan*|wl*|wwan*|wwp*|docker*|br-*|veth*|tun*|tap*|virbr*|cni*) continue ;;
+    esac
+    case "${name}" in
+      eth*|enp*|ens*|eno*|enx*|usb*|en[0-9]*)
+        carrier="$(cat "${NET_CLASS}/${name}/carrier" 2>/dev/null || true)"
+        if [ "${carrier}" = "1" ]; then
+          return 0
+        fi
+        ;;
+    esac
+  done
+  return 1
+}
+
+find_sentinel() {
+  local dir
+  if is_empty_file /boot/wifi; then
+    printf '%s\n' /boot/wifi
+    return 0
+  fi
+  if is_empty_file /boot/firmware/wifi; then
+    printf '%s\n' /boot/firmware/wifi
+    return 0
+  fi
+  for dir in /media /mnt; do
+    [ -d "${dir}" ] || continue
+    for candidate in "${dir}"/*/wifi; do
+      if is_empty_file "${candidate}"; then
+        printf '%s\n' "${candidate}"
+        return 0
+      fi
+    done
+  done
+  return 1
 }
 
 generate_path_unit() {
@@ -101,18 +164,15 @@ read_trimmed() {
   fi
 }
 
-apply_reconcile() {
+apply_type() {
+  local want="$1"
+  local value="$2"
   local d t
-  local wifi bt
-  wifi="$(read_trimmed "${WIFI_STATE_FILE}" on)"
-  bt="$(read_trimmed "${BT_STATE_FILE}" on)"
   while IFS= read -r d; do
     [ -n "${d}" ] || continue
     t="$(device_type "${d}")"
-    if [ "${t}" = "wlan" ] && [ "${wifi}" = "off" ]; then
-      soft_write "${d}" 1
-    elif [ "${t}" = "bluetooth" ] && [ "${bt}" = "off" ]; then
-      soft_write "${d}" 1
+    if [ "${t}" = "${want}" ]; then
+      soft_write "${d}" "${value}"
     fi
   done < <(list_watched)
 }
@@ -129,6 +189,69 @@ apply_release_type() {
   done < <(list_watched)
 }
 
+clear_persist() {
+  printf '%s\n' 'off' > "${PERSIST_FILE}" || true
+}
+
+honour_sentinel() {
+  if find_sentinel >/dev/null; then
+    apply_type wlan 0
+    printf '%s\n' 'on' > "${WIFI_STATE_FILE}" || true
+    clear_persist
+    rm -f "${SESSION_FILE}" || true
+    return 0
+  fi
+  return 1
+}
+
+should_block_wifi_across_reboot() {
+  local persist
+  persist="$(read_trimmed "${PERSIST_FILE}" off)"
+  if [ "${persist}" = "on" ]; then
+    return 0
+  fi
+  if has_wired_carrier; then
+    return 0
+  fi
+  return 1
+}
+
+apply_bluetooth() {
+  local bt
+  bt="$(read_trimmed "${BT_STATE_FILE}" on)"
+  if [ "${bt}" = "off" ]; then
+    apply_type bluetooth 1
+  fi
+}
+
+apply_session() {
+  local wifi
+  : > "${SESSION_FILE}" || true
+  apply_bluetooth
+  if honour_sentinel; then
+    return 0
+  fi
+  wifi="$(read_trimmed "${WIFI_STATE_FILE}" on)"
+  if [ "${wifi}" = "off" ]; then
+    apply_type wlan 1
+  fi
+}
+
+apply_reconcile() {
+  local wifi
+  apply_bluetooth
+  if honour_sentinel; then
+    return 0
+  fi
+  wifi="$(read_trimmed "${WIFI_STATE_FILE}" on)"
+  if [ "${wifi}" != "off" ]; then
+    return 0
+  fi
+  if [ -f "${SESSION_FILE}" ] || should_block_wifi_across_reboot; then
+    apply_type wlan 1
+  fi
+}
+
 PATH_CHANGED=0
 if generate_path_unit; then
   PATH_CHANGED=1
@@ -140,18 +263,27 @@ fi
 
 MODE="$(read_trimmed "${MODE_FILE}" reconcile)"
 
+if [ "${MODE}" = "session" ] && [ ! -f "${SESSION_FILE}" ]; then
+  MODE=reconcile
+fi
+
 case "${MODE}" in
   release)
     apply_release_type all
+    rm -f "${SESSION_FILE}" || true
     printf '%s\n' 'reconcile' > "${MODE_FILE}" || true
     ;;
   release-wifi)
     apply_release_type wlan
+    rm -f "${SESSION_FILE}" || true
     printf '%s\n' 'reconcile' > "${MODE_FILE}" || true
     ;;
   release-bluetooth)
     apply_release_type bluetooth
     printf '%s\n' 'reconcile' > "${MODE_FILE}" || true
+    ;;
+  session)
+    apply_session
     ;;
   *)
     apply_reconcile

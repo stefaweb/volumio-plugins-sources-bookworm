@@ -1,6 +1,6 @@
 # Flight Mode
 
-Soft-blocks WiFi and Bluetooth with rfkill and keeps them blocked across reboot.
+Soft-blocks WiFi and Bluetooth with rfkill. Bluetooth stays blocked across reboot. WiFi comes back after reboot unless a cable is connected or persist is unlocked.
 
 The plugin holds every change it makes. Stop, disable, or uninstall releases the radios and deletes the units it created. No OS file is overwritten. Sudoers is not touched.
 
@@ -17,13 +17,15 @@ Volumio 4 / Bookworm. `amd64` and `armhf`.
 ```mermaid
 flowchart LR
   UI["Plugin UI"] --> IDX["index.js"]
-  IDX -->|"write state / mode"| ST["wifi.state<br/>bluetooth.state<br/>flightmode.mode"]
+  IDX -->|"write state / mode / persist"| ST["wifi.state<br/>bluetooth.state<br/>flightmode.mode<br/>wifi.persist"]
   IDX -->|"sudo systemctl start"| SVC["volumio-flightmode.service"]
   PATH["volumio-flightmode.path"] -->|"rfkill change"| SVC
   BOOT["multi-user.target"] --> SVC
   BOOT --> PATH
   SVC --> SH["flightmode-apply.sh"]
   ST --> SH
+  SENT["/boot/wifi or USB wifi"] --> SH
+  RUN["/run/flightmode-wifi-session"] --> SH
   SH -->|"type = bluetooth or wlan<br/>hard = 0 and soft ≠ desired"| SYS["/sys/class/rfkill/*/soft"]
 ```
 
@@ -31,13 +33,57 @@ The apply script is the only writer of rfkill. Node never calls `rfkill` and nev
 
 Units are additive. `onStart` generates them in the plugin tree and `ln -sf` into `/etc/systemd/system`. `onStop` deletes those two symlinks. `/bin/cp` is not in sudoers, which is why they are symlinks.
 
+## WiFi after reboot
+
+| Situation | WiFi after reboot |
+|---|---|
+| No LAN, default | Comes back. Power cycle recovers. |
+| LAN present | May stay off. The cable is the recovery path. |
+| No LAN, persist unlocked | Stays off until Enable WiFi or Disable flight mode. |
+| Sentinel present | Forced on. Persist is cleared. |
+
+Bluetooth always persists across reboot when it is held. It does not take away the web UI.
+
+A UI Disable WiFi or Enable flight mode writes `/run/flightmode-wifi-session` so the path unit can re-apply WiFi **this boot**. `/run` is tmpfs; after reboot that file is gone and leftover `mode=session` is treated as `reconcile`.
+
+Reconcile applies Bluetooth from `bluetooth.state`. It applies WiFi only if `wifi.state=off` **and** (persist is on **or** a wired carrier is up **or** the session file is still present) **and** no sentinel.
+
+## Persist unlock
+
+Without a cable, persist is a lockout: after reboot the device is not reachable over WiFi. The web UI is gone until you recover. Use it only if the unit has a screen (or you already know how to get back in).
+
+Volumio `askForConfirm` is OK/Cancel only. Persist without a cable is gated by a random 6-character token on this page (`ABCDEFGHJKLMNPQRSTUVWXYZ23456789`). Type it and press **Keep WiFi off across reboot**. Match is case-insensitive. Wrong code: toast and a new token.
+
+The challenge is hidden when a cable is up (persist is allowed without it) and hidden once unlocked (a persist-active note is shown instead). Enable WiFi, Disable flight mode, plugin stop, uninstall, or a sentinel clears persist. It is not a saved password.
+
+Recovery, in order:
+
+1. This page, before you reboot: Enable WiFi or Disable flight mode.
+2. A network cable. LAN up is enough; persist is then allowed without the challenge because the cable is the way back in.
+3. An empty file named `wifi` (no extension) on a USB stick or in `/boot` (or `/boot/firmware`). See Sentinel.
+
+## Sentinel
+
+Headless recovery when persist was unlocked and there is no cable. Same idea as dropping `wpa_supplicant.conf` on the boot partition.
+
+Empty file named `wifi` (size 0, no extension). First match wins:
+
+- `/boot/wifi`
+- `/boot/firmware/wifi`
+- `*/wifi` directly under a mount in `/media` or `/mnt`. Do not recurse.
+
+Presence overrides persist: release wlan, set `wifi.state=on`, clear persist. Bluetooth is left alone. The file is **not** deleted. Remove it to allow persist again.
+
+Checked in the apply script and in `onStart`. A USB stick inserted after boot is seen on the next apply or UI action that starts the oneshot. No udev unit.
+
 ## Apply script
 
 `scripts/flightmode-apply.sh` enumerates `/sys/class/rfkill/*/type` and keeps `bluetooth` and `wlan` only. Never by index. A USB dongle does not shift the policy.
 
 | Invocation | Behaviour |
 |---|---|
-| default (oneshot / path / boot) | soft-block each type whose `*.state` is `off` |
+| `session` | write `/run/flightmode-wifi-session`, block each type whose `*.state` is `off` (sentinel still forces WiFi on) |
+| default / `reconcile` (oneshot / path / boot) | block Bluetooth from state; block WiFi only if held **and** (persist **or** LAN **or** session file) **and** no sentinel |
 | `release` / `release-wifi` / `release-bluetooth` | soft-unblock those types, then reset mode to `reconcile` |
 | `--generate-path` | write the path unit and exit |
 
@@ -53,12 +99,18 @@ flowchart TD
   FLAG -->|no| MODE{"mode"}
   MODE -->|release*| REL["soft = 0 on the named type(s)"]
   REL --> RESET["mode = reconcile"]
-  MODE -->|reconcile| ON["soft = 1 on each type whose state is off"]
+  MODE -->|session| SES["block held radios this boot"]
+  MODE -->|reconcile| REC["block BT from state; block WiFi only if persist, LAN, or session"]
+  SES --> SENT{"sentinel?"}
+  REC --> SENT
+  SENT -->|yes| FORCE["release wlan, clear persist"]
   RESET --> RELOAD
-  ON --> RELOAD["daemon-reload and restart path unit<br/>only if the device set changed"]
+  FORCE --> RELOAD
+  SES --> RELOAD
+  REC --> RELOAD["daemon-reload and restart path unit<br/>only if the device set changed"]
 ```
 
-Default with state `off` does not unblock. That is deliberate: a path trigger while flight mode is off must not fight an airplane key or `headless_wireless.service`. Unblock happens only on an explicit `release` (user Disable, plugin stop, uninstall).
+A leftover `mode=session` after reboot (no `/run/flightmode-wifi-session`) is treated as `reconcile`. That is how no-LAN WiFi comes back.
 
 Never `rfkill unblock all`. Never write `hard`.
 
@@ -85,44 +137,50 @@ The path unit is generated at start from the current device set, plus `PathChang
 
 ## Lifecycle
 
-```mermaid
-stateDiagram-v2
-  [*] --> Stopped
-  Stopped --> Started: onStart
-  Started --> FlightOn: Enable
-  FlightOn --> Started: Disable
-  FlightOn --> Stopped: onStop / uninstall
-  Started --> Stopped: onStop / uninstall
+The plugin is either stopped or started. Radio holds live inside Started. Flight mode is not a third plugin state: it is both radios held.
 
-  state Started {
-    [*] --> UnitsLive
-    note right of UnitsLive: units enabled\nstate off\nradios not held
-  }
-  state FlightOn {
-    [*] --> RadiosHeld
-    note right of RadiosHeld: state on\nsoft block applied\npath unit re-applies
-  }
-  state Stopped {
-    [*] --> Clean
-    note right of Clean: units deleted\nradios released\nOS files untouched
-  }
+```mermaid
+flowchart TD
+  Stopped["Stopped: units deleted, radios released"]
+  Live["Started: radios allowed"]
+  WifiHeld["WiFi held"]
+  BtHeld["Bluetooth held"]
+  BothHeld["Flight mode: both held"]
+  Stopped -->|onStart| Live
+  Live -->|onStop / uninstall| Stopped
+  WifiHeld -->|onStop / uninstall| Stopped
+  BtHeld -->|onStop / uninstall| Stopped
+  BothHeld -->|onStop / uninstall| Stopped
+  Live -->|Disable WiFi| WifiHeld
+  Live -->|Disable Bluetooth| BtHeld
+  Live -->|Enable flight mode| BothHeld
+  WifiHeld -->|Disable Bluetooth| BothHeld
+  BtHeld -->|Disable WiFi| BothHeld
+  BothHeld -->|Enable Bluetooth| WifiHeld
+  BothHeld -->|Enable WiFi| BtHeld
+  WifiHeld -->|Enable WiFi| Live
+  BtHeld -->|Enable Bluetooth| Live
+  BothHeld -->|Disable flight mode| Live
 ```
 
-Flight mode survives reboot only while the plugin remains enabled. That is also the recovery path: disable the plugin and the hold is gone.
+`wifi.state` / `bluetooth.state` are `on` (allowed) or `off` (held). Both `off` is flight mode.
+
+Bluetooth hold survives reboot while the plugin remains enabled. WiFi hold survives reboot only with LAN or persist; otherwise it is this-boot only. A sentinel forces WiFi allowed and clears persist. Disable the plugin and every hold is gone.
 
 `uninstall.sh` repeats the same teardown as `onStop` and is idempotent. The plugin manager always calls `onStop` first.
 
 ## UI
 
-One plugin page. No Save button. Three controls:
+One plugin page. No Save button on the radio sections. Four blocks:
 
-- Disable / Enable WiFi
-- Disable / Enable Bluetooth
+- Status, radios, and network recovery line
+- Disable / Enable WiFi and Bluetooth
+- Persist challenge (no LAN only): type the on-screen code
 - Disable / Enable flight mode (sets both)
 
-Flight mode on means both radios are held. Enabling one radio turns flight mode off and leaves the other held. Status, per-radio soft/hard, and whether a cable is up are filled in `getUIConfig`. Enable flight mode and disable WiFi ask for confirm (ethernet vs lockout wording). A hard block hides the buttons for that radio.
+Flight mode on means both radios are held. Enabling one radio turns flight mode off and leaves the other held. Status, per-radio soft/hard, and whether a cable is up are filled in `getUIConfig`. Enable flight mode and disable WiFi ask for confirm (ethernet vs lockout vs persist wording). A hard block hides the buttons for that radio.
 
-Lockout is allowed. A laptop in a seat has no ethernet; that is the primary use. The confirm states that recovery is only from the local screen, or by disabling the plugin. The `wireless.js` emergency hotspot override will still run and will fail against the block. That is disclosed, not engineered away.
+Default no-LAN lockout is session-only. A reboot brings WiFi back. Persist is the extra option for a device with a screen (OneUp 40 / Gole2). The `wireless.js` emergency hotspot override will still run and will fail against a session or persist block. That is disclosed, not engineered away.
 
 `network/config.json` is not written. It is not this plugin’s file to restore.
 
@@ -133,6 +191,8 @@ Lockout is allowed. A laptop in a seat has no ethernet; that is the primary use.
 - No edit of `rfkill_default.conf`, `wireless.js`, `main.conf`, or `bluetooth.service`
 - No `has_configuration` / My Music registration
 - No System-page UI contributor (the hook exists; Network has none)
+- No 10-minute grace timer
+- No udev/hotplug unit for a USB sentinel
 
 ## Tree
 
@@ -149,34 +209,9 @@ flightmode/
   i18n/strings_{en,de,fr,it,es,nl,pl,pt,sv,da,no,fi,cz}.json
 ```
 
-Generated and gitignored: `units/volumio-flightmode.service`, `units/volumio-flightmode.path`, `wifi.state`, `bluetooth.state`, `flightmode.state`, `flightmode.mode`.
+Generated and gitignored: `units/volumio-flightmode.service`, `units/volumio-flightmode.path`, `wifi.state`, `bluetooth.state`, `flightmode.state`, `flightmode.mode`, `wifi.persist`.
 
-## Install and submit
-
-Run this on the Volumio device. `volumio plugin install` and `volumio plugin submit` are device commands. Remove `node_modules` before the commit so they are not pushed or packed.
-
-```sh
-git clone git@github.com:volumio/volumio-plugins-sources-bookworm.git --depth=1
-cd volumio-plugins-sources-bookworm
-git checkout -b flightmode
-cd flightmode
-
-# --- update code first ---
-
-volumio plugin install
-rm -Rf node_modules
-
-cd ..
-
-git add flightmode
-git commit -m 'Flight Mode - Initial release'
-git push origin flightmode
-
-cd -
-volumio plugin submit
-```
-
-`git add flightmode` only. Do not `git add *` from the repo root.
+Runtime only: `/run/flightmode-wifi-session`.
 
 ## Check on device
 
@@ -184,6 +219,27 @@ volumio plugin submit
 /usr/sbin/rfkill list
 systemctl is-enabled volumio-flightmode.service volumio-flightmode.path
 ls -l /etc/systemd/system/volumio-flightmode.*
+cat /data/plugins/system_controller/flightmode/wifi.state
+cat /data/plugins/system_controller/flightmode/bluetooth.state
+cat /data/plugins/system_controller/flightmode/wifi.persist
 ```
 
 After disable or uninstall those two unit files must be gone and the radios unblocked.
+
+## Testing
+
+Empty file `/data/flightmode` (size 0). When present, treat LAN as down even if ethernet has carrier. Used on hanger to exercise the challenge, persist, and reboot-WiFi-returns without pulling the cable. A directory or a non-empty file is ignored. Not shown in the UI.
+
+```sh
+touch /data/flightmode
+# exercise Disable WiFi / persist / reboot
+rm /data/flightmode
+```
+
+Sentinel check (do not delete the file from the plugin; remove it yourself when done):
+
+```sh
+touch /boot/wifi
+# next apply or UI action should force WiFi on and clear persist
+rm /boot/wifi
+```

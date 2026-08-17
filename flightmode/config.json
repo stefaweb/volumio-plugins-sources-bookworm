@@ -6,5 +6,9 @@
   "bluetooth": {
     "type": "boolean",
     "value": true
+  },
+  "wifi_persist": {
+    "type": "boolean",
+    "value": false
   }
 }

@@ -5,7 +5,8 @@
   "SECTION": {
     "STATUS": "Status",
     "RADIOS": "Radioer",
-    "CONTROL": "Flytilstand"
+    "CONTROL": "Flytilstand",
+    "PERSIST": "Hold Wi-Fi slukket efter genstart"
   },
   "STATUS": {
     "LABEL": "Status",
@@ -13,7 +14,8 @@
     "ON": "Flytilstand slået til",
     "WIFI_OFF": "Wi-Fi slukket",
     "BT_OFF": "Bluetooth slukket",
-    "HARD": "Den fysiske flyknap er slået til"
+    "HARD": "Den fysiske flyknap er slået til",
+    "SENTINEL": "Wi-Fi-gendannelsesfil fundet"
   },
   "RADIOS": {
     "LABEL": "Radioer",
@@ -33,7 +35,9 @@
   "RECOVERY": {
     "LABEL": "Netværk",
     "ETH": "Et kablet netværk er tilsluttet. Denne enhed kan stadig nås via kablet.",
-    "NO_ETH": "Intet kablet netværk. Hvis Wi-Fi eller flytilstand slås til, kan enheden kun nås fra denne skærm."
+    "NO_ETH": "Intet kablet netværk. Wi-Fi slukkes nu og kommer tilbage efter genstart. Bluetooth forbliver slukket efter genstart, hvis du lader det være slukket.",
+    "NO_ETH_PERSIST": "Intet kablet netværk. Wi-Fi forbliver slukket efter genstart, indtil du tænder det eller slår flytilstand fra på denne skærm. Hvis grænsefladen forsvinder: et netværkskabel, eller en tom fil med navnet wifi på et USB-stik eller i /boot.",
+    "SENTINEL": "Wi-Fi-gendannelsesfil fundet. Wi-Fi forbliver tændt, indtil filen fjernes fra /boot eller USB-disken."
   },
   "HARDBLOCK": {
     "NOTE": "En fysisk flyknap har slukket en radio. Det kan ikke ophæves i software."
@@ -44,15 +48,18 @@
     "WIFI_DISABLE": "Slå Wi-Fi fra",
     "WIFI_ENABLE": "Slå Wi-Fi til",
     "BT_DISABLE": "Slå Bluetooth fra",
-    "BT_ENABLE": "Slå Bluetooth til"
+    "BT_ENABLE": "Slå Bluetooth til",
+    "PERSIST_UNLOCK": "Hold Wi-Fi slukket efter genstart"
   },
   "CONFIRM": {
     "ENABLE_TITLE": "Slå flytilstand til?",
     "ENABLE_ETH": "Wi-Fi og Bluetooth slukkes og forbliver slukket efter genstart. Denne enhed kan stadig nås via kablet.",
-    "ENABLE_NO_ETH": "Wi-Fi og Bluetooth slukkes og forbliver slukket efter genstart. Denne enhed kan derefter ikke nås via netværket. Du kan kun tænde radioerne igen fra denne skærm, eller ved at deaktivere pluginnet.",
+    "ENABLE_NO_ETH": "Wi-Fi og Bluetooth slukkes nu. En genstart tænder Wi-Fi. Bluetooth forbliver slukket efter genstart, hvis du lader det være slukket.",
     "WIFI_TITLE": "Slå Wi-Fi fra?",
     "WIFI_ETH": "Wi-Fi slukkes og forbliver slukket efter genstart. Denne enhed kan stadig nås via kablet.",
-    "WIFI_NO_ETH": "Wi-Fi slukkes og forbliver slukket efter genstart. Denne enhed kan derefter ikke nås via netværket. Du kan kun tænde Wi-Fi igen fra denne skærm, eller ved at deaktivere pluginnet."
+    "WIFI_NO_ETH": "Wi-Fi slukkes nu. En genstart tænder det.",
+    "ENABLE_NO_ETH_PERSIST": "Wi-Fi og Bluetooth slukkes og forbliver slukket efter genstart, indtil du slår flytilstand fra eller tænder Wi-Fi på denne skærm.",
+    "WIFI_NO_ETH_PERSIST": "Wi-Fi slukkes og forbliver slukket efter genstart, indtil du tænder det eller slår flytilstand fra på denne skærm."
   },
   "TOAST": {
     "ENABLED": "Wi-Fi og Bluetooth er slukket",
@@ -62,6 +69,21 @@
     "BT_OFF": "Bluetooth er slukket",
     "BT_ON": "Bluetooth er tændt",
     "HARD_DENIED": "En hardwareknap blokerer en radio. Det kan ikke tilsidesættes.",
-    "FAILED": "Radiostatus kunne ikke anvendes"
+    "FAILED": "Radiostatus kunne ikke anvendes",
+    "PERSIST_ON": "Wi-Fi forbliver slukket efter genstart",
+    "PERSIST_BAD": "Koden matcher ikke. Prøv igen med den nye kode.",
+    "PERSIST_SENTINEL": "Der er en Wi-Fi-gendannelsesfil. Fjern den, før du slår vedvarende sluk til."
+  },
+  "PERSIST": {
+    "TOKEN": "Skriv denne kode",
+    "TOKEN_DOC": "Skriv koden nøjagtigt. Den vises på denne side, så du bekræfter, at du kan læse den.",
+    "CHALLENGE": "Kode",
+    "STATUS": "Vedvarende",
+    "NOTE_ACTIVE": "Wi-Fi forbliver slukket efter genstart, indtil du tænder det eller slår flytilstand fra på denne skærm.",
+    "NOTE_SENTINEL": "Der er en Wi-Fi-gendannelsesfil. Vedvarende sluk kan ikke slås til, før filen fjernes fra /boot eller USB-disken. Mere i dette plugins README.",
+    "WARN_LABEL": "Advarsel",
+    "NOTE_CHALLENGE": "Intet netværkskabel. Efter genstart kan denne enhed ikke nås over Wi-Fi. Brug det kun, hvis enheden har en skærm, eller du har en anden vej tilbage.",
+    "RECOVER_LABEL": "Gendannelse",
+    "NOTE_RECOVER": "Denne side før genstart (tænd Wi-Fi eller slå flytilstand fra), et netværkskabel, eller en tom fil med navnet wifi på et USB-stik eller i /boot. Mere i dette plugins README."
   }
 }

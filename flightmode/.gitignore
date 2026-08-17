@@ -4,3 +4,4 @@ flightmode.state
 flightmode.mode
 wifi.state
 bluetooth.state
+wifi.persist

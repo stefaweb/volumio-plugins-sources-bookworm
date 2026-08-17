@@ -101,6 +101,57 @@
       ]
     },
     {
+      "id": "section_persist",
+      "element": "section",
+      "label": "TRANSLATE.SECTION.PERSIST",
+      "icon": "fa-lock",
+      "hidden": true,
+      "onSave": {
+        "type": "controller",
+        "endpoint": "system_controller/flightmode",
+        "method": "unlockWifiPersist"
+      },
+      "saveButton": {
+        "label": "TRANSLATE.BUTTON.PERSIST_UNLOCK",
+        "data": [
+          "persist_challenge"
+        ]
+      },
+      "content": [
+        {
+          "id": "persist_note",
+          "element": "input",
+          "type": "text",
+          "label": "TRANSLATE.PERSIST.WARN_LABEL",
+          "value": "",
+          "hidden": true
+        },
+        {
+          "id": "persist_recover",
+          "element": "input",
+          "type": "text",
+          "label": "TRANSLATE.PERSIST.RECOVER_LABEL",
+          "value": "",
+          "hidden": true
+        },
+        {
+          "id": "persist_token",
+          "element": "input",
+          "type": "text",
+          "label": "TRANSLATE.PERSIST.TOKEN",
+          "doc": "TRANSLATE.PERSIST.TOKEN_DOC",
+          "value": ""
+        },
+        {
+          "id": "persist_challenge",
+          "element": "input",
+          "type": "text",
+          "label": "TRANSLATE.PERSIST.CHALLENGE",
+          "value": ""
+        }
+      ]
+    },
+    {
       "id": "section_control",
       "element": "section",
       "label": "TRANSLATE.SECTION.CONTROL",
