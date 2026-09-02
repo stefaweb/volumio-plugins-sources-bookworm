@@ -8,7 +8,7 @@ VERSION: 1.0.3 of 16-08-2026
 
 The plugin provides:
 
-- 12 FIP radio stations
+- 13 FIP radio stations
 - AAC 192 Kbps HiFi streams
 - Station logos
 - Track metadata (artist, title, album)
@@ -28,7 +28,8 @@ The plugin provides:
 - FIP Reggae
 - FIP Rock
 - FIP Sacré Français
-- FIP Monde
+- FIP World
+- FIP Cultes
 
 The station “FIP Sacré Français” does not display album covers or track metadata (artist, title, album) because I have not been able to find the metadataId for this station.
 
