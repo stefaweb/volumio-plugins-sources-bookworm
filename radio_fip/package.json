@@ -1,6 +1,6 @@
 {
 	"name": "radio_fip",
-	"version": "1.0.4",
+	"version": "1.0.5",
 	"description": "FIP Radio plugin for Volumio",
 	"main": "index.js",
 	"author": "Stef",
