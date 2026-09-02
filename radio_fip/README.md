@@ -35,7 +35,7 @@ The station “FIP Sacré Français” does not display album covers or track me
 <img width="2940" height="1852" alt="radio_fip_plugins_sc_1" src="https://github.com/user-attachments/assets/d6864727-5b00-4104-993b-fde385442ed3" />
 <br>
 <br>
-<img width="2732" height="1800" alt="Image" src="https://github.com/user-attachments/assets/41222148-5e9c-42c3-b9c5-0f05070f9969" />
+<img width="3318" height="1920" alt="radio_fip_list" src="https://github.com/user-attachments/assets/411063ce-cdd7-4814-a94a-5c9a2c7429ec" />
 <br>
 <br>
 <img width="1125" height="2090" alt="radio_fip_plugins_sc_3" src="https://github.com/user-attachments/assets/f1452cd4-93ee-43ab-b821-02212de86e81" />
