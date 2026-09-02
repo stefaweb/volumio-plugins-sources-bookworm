@@ -41,5 +41,3 @@ The station “FIP Sacré Français” does not display album covers or track me
 <img width="1125" height="2090" alt="radio_fip_plugins_sc_3" src="https://github.com/user-attachments/assets/f1452cd4-93ee-43ab-b821-02212de86e81" />
 <br>
 <br>
-
-5. Search for "Radio FIP" and install the plugin.
