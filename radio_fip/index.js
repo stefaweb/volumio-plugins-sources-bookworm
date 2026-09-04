@@ -2,8 +2,8 @@
  * Radio FIP Volumio Plugin
  *
  * File        : index.js
- * Version     : 1.0.3
- * Date        : 16-08-2026
+ * Version     : 1.0.6
+ * Date        : 04-09-2026
  * Author      : Stef
  *
  * Description :
@@ -194,7 +194,7 @@ ControllerFIP.prototype.getConfigurationFiles = function () {
  */
 ControllerFIP.prototype.onStart = function() {
     var self = this;
-    
+
     self.mpdPlugin = self.commandRouter.pluginManager.getPlugin(
         'music_service',
         'mpd'
@@ -746,6 +746,9 @@ ControllerFIP.prototype.updateMetadata = function(station) {
         if (!data) {
             return;
         }
+        if (!data.artist && !data.title) {
+            return;
+        }
         var current =
             data.artist + '|' +
             data.title + '|' +
@@ -763,32 +766,34 @@ ControllerFIP.prototype.updateMetadata = function(station) {
         var state = Object.assign({}, self.state, {
             status: 'play',
             service: self.serviceName,
-			type: 'track',
+            type: 'track',
             // To use green circle with duration
-			// trackType: station ? station.title : 'FIP',
+            // trackType: station ? station.title : 'FIP',
             // To use webradio in circle
             trackType: 'webradio',
             // To use green circle with duration
-			// samplerate: '44.1 KHz',
-			// bitdepth: '16 bit',
-			// channels: 2,
-			// To use webradio in circle
-			samplerate: '',
-			bitdepth: '',
-			channels: '',
+            // samplerate: '44.1 KHz',
+            // bitdepth: '16 bit',
+            // channels: 2,
+            // To use webradio in circle
+            samplerate: '',
+            bitdepth: '',
+            channels: '',
             radioType: 'FIP',
             title: data.title,
             name: station.title,
             artist: data.artist,
             album: data.album,
+            // Keep the station logo.
+            // Radio France "cover" is a UUID, not a Volumio albumart URL.
             albumart: data.albumart,
             uri: station.stream,
             streaming: true,
             disableUiControls: true,
-	        // To use green circle with duration
-	        // duration: 1,
-	        // To use webradio in circle
-	        duration: 0,
+            // To use green circle with duration
+            // duration: 1,
+            // To use webradio in circle
+            duration: 0,
             seek: 0
         });
         self.state = state;
@@ -811,6 +816,7 @@ ControllerFIP.prototype.updateMetadata = function(station) {
                     data.artist;
                 queueItem.album =
                     data.album;
+                // Keep the station logo in the queue item.
                 queueItem.albumart =
                     data.albumart;
                 queueItem.uri =
@@ -820,13 +826,13 @@ ControllerFIP.prototype.updateMetadata = function(station) {
                 //    'FIP Radio';
                 // To use webradio in circle
                 queueItem.trackType =
-    				'webradio';
+                    'webradio';
                 queueItem.type =
                     'track';
                 queueItem.duration = 0;
-				queueItem.samplerate = '44.1 KHz';
-				queueItem.bitdepth = '16 bit';
-				queueItem.channels = 2;
+                queueItem.samplerate = '44.1 KHz';
+                queueItem.bitdepth = '16 bit';
+                queueItem.channels = 2;
             }
             self.commandRouter
                 .stateMachine
